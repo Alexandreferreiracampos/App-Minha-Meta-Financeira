@@ -59,7 +59,11 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
         deposit()
 
         }else{
-            console.log('saldo insuficiente')
+            ToastAndroid.showWithGravityAndOffset(
+                "Saldo insuficiente",
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
         }
         
     }

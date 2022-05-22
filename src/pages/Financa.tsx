@@ -39,14 +39,9 @@ export default function Financa({route}) {
 
     useEffect(()=>{
         data()
-        console.log('rodou')
     },[])
 
-    const atualizadados=()=>{
-        const index = dataMeta.findIndex((element:any) => element.id == route.params.id)
-        console.log(dataMeta[index])
-    }
-
+    
     const somarBalance = async ()=>{
         const data = await AsyncStorage.getItem('@financa:data') || ''
         const jsonData = JSON.parse(data)
