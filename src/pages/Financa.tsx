@@ -1,43 +1,107 @@
-import react, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ToastAndroid } from 'react-native';
+import react, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ToastAndroid} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import ScreenModalDeposito from "../component/modalDeposito";
+import ScreenModalRetirada from "../component/modalRetirada";
+import { calcularValor, convertForInt, maskCurrency } from "../component/function";
 
 
+export default function Financa({route}) {
 
-export default function Financa() {
 
     const balanceNone = '******';
-    const [balance, setBalance] = useState(15000000);
-    const [deposit, setDeposit] = useState(15000000);
-    const [withdrawal, setWithdrawal] = useState(2500000);
+    const [balance, setBalance] = useState('');
+    const [deposit, setDeposit] = useState('');
+    const [withdrawal, setWithdrawal] = useState('');
     const [goal, setGoal] = useState('0');
     const [progress, setProgress] = useState('95');
+    const [dataMeta, setDataMeta] = useState()
+    const [modalDepositoActive, setModalDepositoAtive] = useState(false);
+    const [modalRetiradaActive, setModalRetiradaAtive] = useState(false);
 
 
     const [visibleBalance, setVisibleBalance] = useState('eye-outline')
     const [visibleBalancevalue, setVisibleBalancevalue] = useState(balance)
 
-    const soma = (metodo: any, value: any) => {
-        if (metodo == 0) {
-            setDeposit(deposit + value)
-            setBalance(balance + value)
 
-        } else if (metodo == 1) {
-            setWithdrawal(withdrawal - value)
-            value
-            setBalance(balance - value)
-        }
-
+    const data = () => {
+        setModalDepositoAtive(false)
+        setModalRetiradaAtive(false)
+        somarDepositos()
+        somarRetiradas()
+        somarBalance()
     }
+
+    useEffect(()=>{
+        data()
+        console.log('rodou')
+    },[])
+
+    const atualizadados=()=>{
+        const index = dataMeta.findIndex((element:any) => element.id == route.params.id)
+        console.log(dataMeta[index])
+    }
+
+    const somarBalance = async ()=>{
+        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const jsonData = JSON.parse(data)
+        const index = jsonData.findIndex((element:any) => element.id == route.params.id)
+        let dataSomaDeposito = 0
+        for(let i=0; i < jsonData[index].deposito.length; i++){
+            dataSomaDeposito = jsonData[index].deposito[i].valor + dataSomaDeposito          
+        }
+        let dataSomaRetirada = 0
+        for(let i=0; i < jsonData[index].retirada.length; i++){
+            dataSomaRetirada = jsonData[index].retirada[i].valor + dataSomaRetirada          
+        }
+        let somaBalanca = dataSomaDeposito - dataSomaRetirada
+        let dataSomaDepositoString = String(somaBalanca)
+        setBalance(maskCurrency(dataSomaDepositoString))
+        
+    }
+
+    const somarDepositos= async (item:any)=>{
+        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const jsonData = JSON.parse(data)
+        const index = jsonData.findIndex((element:any) => element.id == route.params.id)
+        let dataSomaDeposito = 0
+        for(let i=0; i < jsonData[index].deposito.length; i++){
+            dataSomaDeposito = jsonData[index].deposito[i].valor + dataSomaDeposito          
+        }
+        let dataSomaDepositoString = String(dataSomaDeposito)
+        setDeposit(maskCurrency(dataSomaDepositoString))
+
+        
+        
+        
+        
+    }
+    const somarRetiradas= async (item:any)=>{
+        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const jsonData = JSON.parse(data)
+        const index = jsonData.findIndex((element:any) => element.id == route.params.id)
+        let dataSomaDeposito = 0
+        for(let i=0; i < jsonData[index].retirada.length; i++){
+            dataSomaDeposito = jsonData[index].retirada[i].valor + dataSomaDeposito          
+        }
+        let dataSomaDepositoString = String(dataSomaDeposito)
+        setWithdrawal(maskCurrency(dataSomaDepositoString))
+        somarBalance()
+          
+    }
+
+
 
     const BalanceVisible = () => {
         if (visibleBalance == "eye-off-outline") {
             setVisibleBalance('eye-outline')
             setVisibleBalancevalue(balance)
+            
         } else {
             setVisibleBalance('eye-off-outline')
             setVisibleBalancevalue(balanceNone)
@@ -49,8 +113,10 @@ export default function Financa() {
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
+            <ScreenModalDeposito statusModal={modalDepositoActive} deposit={() => data()} changeStatusModal={() => setModalDepositoAtive(false)} id={route.params.id} />
+            <ScreenModalRetirada statusModal={modalRetiradaActive} deposit={() => data()} changeStatusModal={() => setModalRetiradaAtive(false)} id={route.params.id} />
             <View style={styles.header}>
-                <View><Text style={{ color:'#868686', fontWeight:'bold', fontSize: RFPercentage(1.8), top: -10 }}>Saldo</Text></View>
+                <View><Text style={{ color:'#868686', fontWeight:'bold', fontSize: RFPercentage(1.8), top: -10 }}>{route.params.title}</Text></View>
                 <View style={styles.containerBalance}>
                     <Text style={styles.balance}>R$ {balance}</Text>
                 </View>
@@ -60,7 +126,7 @@ export default function Financa() {
                 </TouchableOpacity>
 
                 <View style={styles.ContainerButtomBalance}>
-                    <TouchableOpacity onPress={() => soma(0, 20)} style={styles.ButtomBalance}>
+                    <TouchableOpacity onPress={() => setModalDepositoAtive(true)} style={styles.ButtomBalance}>
                         <FontAwesome name="arrow-circle-up" size={RFPercentage(4.5)} color="green" style={{ paddingEnd: 13 }} />
                         <View >
                             <Text style={{ color:'#868686', fontSize: RFPercentage(1.8), fontWeight:'bold' }}>Entrada</Text>
@@ -70,7 +136,7 @@ export default function Financa() {
 
                     <View style={{ width: 0.4, height: '70%', backgroundColor: 'black', margin: 10 }}></View>
 
-                    <TouchableOpacity onPress={() => soma(1, 20)} style={styles.ButtomBalance}>
+                    <TouchableOpacity onPress={() => setModalRetiradaAtive(true)} style={styles.ButtomBalance}>
                         <FontAwesome name="arrow-circle-down" size={RFPercentage(4.5)} color="red" style={{ paddingEnd: 13 }} />
                         <View>
                             <Text style={{ color:'#868686', fontSize: RFPercentage(1.8), fontWeight:'bold' }}>saída</Text>
@@ -83,7 +149,7 @@ export default function Financa() {
             </View>
             <View style={styles.cardMeta}>
                 <Text style={{ color:'#868686', fontSize: RFPercentage(2.8), fontWeight:'bold' }}>Meta:</Text>
-                <Text style={{ color:'#868686', fontSize: RFPercentage(3), fontWeight:'bold' }}>R$ {goal}</Text>
+                <Text style={{ color:'#868686', fontSize: RFPercentage(3), fontWeight:'bold' }}>R$ {route.params.meta}</Text>
             </View>
             <View style={styles.cardProgresso}>
 

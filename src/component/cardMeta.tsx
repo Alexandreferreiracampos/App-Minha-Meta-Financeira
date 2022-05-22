@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TouchableOpacityProps} from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { calcularValor, convertForInt, maskCurrency } from "./function";
 
 
 interface cardMetaProps extends TouchableOpacityProps {
@@ -15,6 +16,8 @@ interface cardMetaProps extends TouchableOpacityProps {
 export default function cardMeta({ title,lerDados, date, saldo, meta,...rest }: cardMetaProps) {
     const [progress, setProgress] = useState(23);
     const [ProgressBarValue, setProgressBarValue] = useState(23);
+    let metaString = String(meta)
+
 
     return (
         <TouchableOpacity {...rest} style={styles.container} onPress={lerDados}>
@@ -40,7 +43,7 @@ export default function cardMeta({ title,lerDados, date, saldo, meta,...rest }: 
                 </Text>
             <Text style={{fontSize:16, color: '#868686',fontWeight: 'bold',}}>
                 
-                R$ {meta}
+                R$ {maskCurrency(metaString)}
             </Text>
             </View>
                 </View>

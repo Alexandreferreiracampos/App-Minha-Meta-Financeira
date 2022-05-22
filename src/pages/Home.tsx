@@ -27,11 +27,26 @@ export default function Home() {
             setDataMeta(jsonData)
 
         } catch (e) {
-            ToastAndroid.showWithGravityAndOffset(
-                `Dados não encontrado${e}`,
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-                25, 50)
+            setDataMeta({
+                id: 0,
+                title: '',
+                date: '',
+                deposito: [
+                    {
+                        nome: '',
+                        valor: 0,
+                        date: ''
+                    },
+                ],
+                retirada: [
+                    {
+                        nome: '',
+                        valor: 0,
+                        date: ''
+                    },
+                ],
+                meta: 0
+            })
         }
 
 
@@ -49,8 +64,8 @@ export default function Home() {
     }
 
     const abrirMeta = (item: any) => {
-        navigation.navigate(Financa)
-        
+        navigation.navigate("Financa", item)
+       
     }
     return (
         <SafeAreaView style={styles.container}>
