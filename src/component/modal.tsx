@@ -25,9 +25,31 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
     const salvarMeta = async () => {
         const data = await AsyncStorage.getItem('@financa:data')
         const jsonData = JSON.parse(data)
-
-        const value = jsonData
-        const incrementId = value.length
+        if(jsonData == null){
+            const value =[{
+                id: 0,
+                title: title,
+                date: date,
+                deposito: [
+                    {
+                        nome: '',
+                        valor: 0,
+                        date: ''
+                    },
+                ],
+                retirada: [
+                    {
+                        nome: '',
+                        valor: 0,
+                        date: ''
+                    },
+                ],
+                meta: convertForInt(currency)
+            }]
+            storeData(value)
+        }else{
+            const value = jsonData        
+        const incrementId = value.length + 1
         value.push(
             {
                 id: incrementId,
@@ -50,9 +72,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                 meta: convertForInt(currency)
             }
         )
-
-
         storeData(value)
+        }      
     }
 
 
@@ -62,6 +83,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
 
             const jsonData = JSON.stringify(value)
             await AsyncStorage.setItem('@financa:data', jsonData)
+            
             deposit()
 
         } catch (e) {

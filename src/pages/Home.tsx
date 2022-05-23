@@ -7,9 +7,6 @@ import ScreenModal from "../component/modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { convertForInt } from "../component/function";
 import { useNavigation } from '@react-navigation/core'
-import Financa from "./Financa";
-
-
 
 export default function Home() {
 
@@ -25,6 +22,7 @@ export default function Home() {
             const data = await AsyncStorage.getItem('@financa:data') || ''
             const jsonData = JSON.parse(data)
             setDataMeta(jsonData)
+            
 
         } catch (e) {
             setDataMeta({
@@ -54,7 +52,7 @@ export default function Home() {
 
     useEffect(() => {
         readData()
-        console.log(2)
+        
     }, [])
 
     const data = () => {
