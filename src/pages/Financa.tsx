@@ -94,8 +94,7 @@ export default function Financa({route}) {
             dataSomaRetirada = jsonData[index].retirada[i].valor + dataSomaRetirada          
         }
         let somaBalanca = dataSomaDeposito - dataSomaRetirada
-        let dataSomaDepositoString = String(somaBalanca)
-        setBalance(maskCurrency(dataSomaDepositoString))
+        setBalance(maskCurrency(String(somaBalanca)))
          
     }
 
@@ -107,8 +106,7 @@ export default function Financa({route}) {
         for(let i=0; i < jsonData[index].deposito.length; i++){
             dataSomaDeposito = jsonData[index].deposito[i].valor + dataSomaDeposito          
         }
-        let dataSomaDepositoString = String(dataSomaDeposito)
-        setDeposit(maskCurrency(dataSomaDepositoString))   
+        setDeposit(maskCurrency(String(dataSomaDeposito)))   
     }
     const somarRetiradas= async ()=>{
         const data = await AsyncStorage.getItem('@financa:data') || ''
@@ -118,8 +116,7 @@ export default function Financa({route}) {
         for(let i=0; i < jsonData[index].retirada.length; i++){
             dataSomaDeposito = jsonData[index].retirada[i].valor + dataSomaDeposito          
         }
-        let dataSomaDepositoString = String(dataSomaDeposito)
-        setWithdrawal(maskCurrency(dataSomaDepositoString))
+        setWithdrawal(maskCurrency(String(dataSomaDeposito)))
         somarBalance()
           
     }
@@ -176,7 +173,7 @@ export default function Financa({route}) {
             </View>
             <View style={styles.cardMeta}>
                 <Text style={{ color:'#868686', fontSize: RFPercentage(2.8), fontWeight:'bold' }}>Meta:</Text>
-                <Text style={{ color:'#868686', fontSize: RFPercentage(3), fontWeight:'bold' }}>R$ {route.params.meta}</Text>
+                <Text style={{ color:'#868686', fontSize: RFPercentage(3), fontWeight:'bold' }}>R$ {maskCurrency(String(route.params.meta))}</Text>
             </View>
             <View style={styles.cardProgresso}>
 
