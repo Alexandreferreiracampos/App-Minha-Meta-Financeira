@@ -22,7 +22,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
     const [title, setTitle] = useState('');
 
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data')
+        const data = await AsyncStorage.getItem('@financa:data10')
         const jsonData = JSON.parse(data)
 
         const value = jsonData
@@ -38,8 +38,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
           },)
         
           storeData(value)
-          
-        
+         
         deposit()
 
        
@@ -51,8 +50,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
         try {
 
             const jsonData = JSON.stringify(value)
-            await AsyncStorage.setItem('@financa:data', jsonData)
-            
+            await AsyncStorage.setItem('@financa:data10', jsonData)
+            console.log(value)
             deposit()
 
         } catch (e) {
@@ -88,7 +87,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                                     placeholder="Descrição"
                                     placeholderTextColor="#000"
                                     maxLength={100}
-                                    onChangeText={(text) => setTitle(text)}
+                                    onChangeText={(text: string) => setTitle(text)}
                                 />
                             </View>
         

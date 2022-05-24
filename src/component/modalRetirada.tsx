@@ -22,7 +22,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
     const [title, setTitle] = useState('');
 
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element:any) => element.id == id)
         let dataSomaDeposito = 0
@@ -38,7 +38,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
        
         console.log(retirada)
         if( somaBalanca >= retirada){
-            const data = await AsyncStorage.getItem('@financa:data')
+            const data = await AsyncStorage.getItem('@financa:data10')
         const jsonData = JSON.parse(data)
 
         const value = jsonData
@@ -74,7 +74,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
         try {
 
             const jsonData = JSON.stringify(value)
-            await AsyncStorage.setItem('@financa:data', jsonData)
+            await AsyncStorage.setItem('@financa:data10', jsonData)
             console.log(value)
             deposit()
 

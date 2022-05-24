@@ -23,44 +23,60 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
     const [title, setTitle] = useState('');
 
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data')
+        const data = await AsyncStorage.getItem('@financa:data10')
         const jsonData = JSON.parse(data)
-        const value = jsonData        
-        const incrementId = value.length + 1
-        value.push(
-            {
-                id: incrementId,
-                title: title,
-                date: date,
-                deposito: [
-                    {
-                        nome: '',
-                        valor: 0,
-                        date: ''
-                    },
-                ],
-                retirada: [
-                    {
-                        nome: '',
-                        valor: 0,
-                        date: ''
-                    },
-                ],
-                meta: convertForInt(currency),
-                saldo:0,
-                porcent:0,
-                visible:false,
-            }
-        )
-        storeData(value)    
+        if (jsonData == null) {
+
+            const value = []
+            value.push(
+                {
+                    id: 0,
+                    title: title,
+                    date: date,
+                    deposito: [
+                        
+                    ],
+                    retirada: [
+                       
+                    ],
+                    meta: convertForInt(currency),
+                    saldo: 0,
+                    porcent: 0,
+                    visible: false,
+                }
+            )
+            storeData(value)
+
+        } else {
+            const value = jsonData
+            const incrementId = value.length + 1
+            value.push(
+                {
+                    id: incrementId,
+                    title: title,
+                    date: date,
+                    deposito: [
+                       
+                    ],
+                    retirada: [
+                       
+                    ],
+                    meta: convertForInt(currency),
+                    saldo: 0,
+                    porcent: 0,
+                    visible: false,
+                }
+            )
+            storeData(value)
+        }
     }
 
     const storeData = async (value: any) => {
         try {
 
             const jsonData = JSON.stringify(value)
-            await AsyncStorage.setItem('@financa:data', jsonData)
-            
+            await AsyncStorage.setItem('@financa:data10', jsonData)
+
             deposit()
 
         } catch (e) {

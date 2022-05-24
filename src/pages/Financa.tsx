@@ -9,35 +9,21 @@ import { useNavigation } from '@react-navigation/native';
 import ScreenModalDeposito from "../component/modalDeposito";
 import ScreenModalRetirada from "../component/modalRetirada";
 import { calcularValor, convertForInt, maskCurrency } from "../component/function";
-import { VictoryPie } from 'victory-native';
-
+import { FlatList } from 'react-native-gesture-handler';
 
 export default function Financa({ route }) {
-
 
     const balanceNone = '******';
     const [balance, setBalance] = useState('');
     const [deposit, setDeposit] = useState('');
     const [withdrawal, setWithdrawal] = useState('');
     const [progress, setProgress] = useState(0);
-    const [dataMeta, setDataMeta] = useState()
     const [modalDepositoActive, setModalDepositoAtive] = useState(false);
     const [modalRetiradaActive, setModalRetiradaAtive] = useState(false);
-
-    const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
-    const data1 = [
-        { quarter: 1, earnings: 13000,color:randomColor() },
-        { quarter: 2, earnings: 16500, color:randomColor()},
-        { quarter: 3, earnings: 14250, color:randomColor()},
-        { quarter: 4, earnings: 19000, color:randomColor()}
-    ];
-   
-   
-
-
-    const [visibleBalance, setVisibleBalance] = useState('eye-outline')
-    const [visibleBalancevalue, setVisibleBalancevalue] = useState(balance)
-
+    const [updateFlastlist, setUpdateFlastlist] = useState(true)
+    const [visible, setVisible] = useState(true);
+    const [visibleBalance, setVisibleBalance] = useState('eye-outline');
+    
     useEffect(() => {
         data()
     }, [balance])
@@ -55,7 +41,7 @@ export default function Financa({ route }) {
     }, [balance])
 
     const salvarSaldo = async () => {
-        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const value = jsonData
         const index = value.findIndex((element: any) => element.id == route.params.id)
@@ -72,14 +58,15 @@ export default function Financa({ route }) {
         }
         setProgress(jsonData[index].porcent)
         storeData(value)
+        
     }
 
     const storeData = async (value: any) => {
         try {
 
             const jsonData = JSON.stringify(value)
-            await AsyncStorage.setItem('@financa:data', jsonData)
-
+            await AsyncStorage.setItem('@financa:data10', jsonData)
+            
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(
                 `Não foi possivel salvar os dados${e}`,
@@ -89,11 +76,8 @@ export default function Financa({ route }) {
         }
     }
 
-
-
-
     const somarBalance = async () => {
-        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element: any) => element.id == route.params.id)
         let dataSomaDeposito = 0
@@ -110,7 +94,7 @@ export default function Financa({ route }) {
     }
 
     const somarDepositos = async () => {
-        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element: any) => element.id == route.params.id)
         let dataSomaDeposito = 0
@@ -120,7 +104,7 @@ export default function Financa({ route }) {
         setDeposit(maskCurrency(String(dataSomaDeposito)))
     }
     const somarRetiradas = async () => {
-        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element: any) => element.id == route.params.id)
         let dataSomaDeposito = 0
@@ -132,19 +116,6 @@ export default function Financa({ route }) {
 
     }
 
-    const BalanceVisible = () => {
-        if (visibleBalance == "eye-off-outline") {
-            setVisibleBalance('eye-outline')
-            setVisibleBalancevalue(balance)
-
-        } else {
-            setVisibleBalance('eye-off-outline')
-            setVisibleBalancevalue(balanceNone)
-        }
-
-    }
-
-
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
@@ -155,10 +126,6 @@ export default function Financa({ route }) {
                 <View style={styles.containerBalance}>
                     <Text style={styles.balance}>R$ {balance}</Text>
                 </View>
-
-                <TouchableOpacity onPress={() => BalanceVisible()}>
-                    <Ionicons name={visibleBalance} size={RFPercentage(3.5)} color='#868686' />
-                </TouchableOpacity>
 
                 <View style={styles.ContainerButtomBalance}>
                     <TouchableOpacity onPress={() => setModalDepositoAtive(true)} style={styles.ButtomBalance}>
@@ -182,14 +149,11 @@ export default function Financa({ route }) {
                 </View>
 
             </View>
-            <View style={styles.cardMeta}>
-                <Text style={{ color: '#868686', fontSize: RFPercentage(2.8), fontWeight: 'bold' }}>Meta:</Text>
-                <Text style={{ color: '#868686', fontSize: RFPercentage(3), fontWeight: 'bold' }}>R$ {maskCurrency(String(route.params.meta))}</Text>
-            </View>
+           
             <View style={styles.cardProgresso}>
 
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: '#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Você guardou até agora</Text>
+                    <Text style={{ color: '#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Minha Meta: R$ {maskCurrency(String(route.params.meta))} </Text>
                     <Text style={{ color: '#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>{progress.toFixed(1)}%</Text>
                 </View>
 
@@ -205,17 +169,50 @@ export default function Financa({ route }) {
                     </View>
                 </View>
             </View>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={styles.cardExtrato}>
+                <View style={{ top:-10,borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                    <View>
+                        <TouchableOpacity onPress={()=>setVisible(true)} style={{ width: 150, height: 50,borderRadius:10, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: 'white', fontWeight: 'bold' }}> Extrato Depositos</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity onPress={()=>setVisible(false)} style={{ width: 150, height: 50, borderRadius:10, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Extrato Retiradas</Text>
+                    </TouchableOpacity>
+                </View>
+                { visible && 
+                <FlatList
+                data={route.params.deposito}
+                renderItem={({ item }) =>
+                    <View style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                        <View>
+                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
+                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
+                        </View>
+                        <Text style={{ color: 'green', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
+                    </View>
+                }
+                keyExtractor={(item) => item.name}
+                extraData={updateFlastlist}
 
-                <VictoryPie
-                    data={data1}
-                    // data accessor for x values
-                    x="quarter"
-                    // data accessor for y values
-                    y="earnings"
-                    colorScale={data1.map(expense=> expense.color)}
+            />}
+            { !visible && 
+                <FlatList
+                data={route.params.retirada}
+                renderItem={({ item }) =>
+                    <View style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                        <View>
+                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
+                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
+                        </View>
+                        <Text style={{ color: 'red', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
+                    </View>
+                }
+                keyExtractor={(item) => item.name}
+                extraData={updateFlastlist}
 
-                />
+            />}
+                
             </View>
         </View>
     )
@@ -271,6 +268,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        backgroundColor: 'rgb(243,243,243)',
+    },
+    cardExtrato: {
+        width: '97%',
+        height: '52%',
+        borderRadius: 18,
+        marginTop: 10,
+        padding: 18,
         backgroundColor: 'rgb(243,243,243)',
     },
     cardProgresso: {

@@ -20,7 +20,7 @@ export default function Home() {
 
         try {
 
-            const data = await AsyncStorage.getItem('@financa:data') || ''
+            const data = await AsyncStorage.getItem('@financa:data10') || ''
             const jsonData = JSON.parse(data)
             setDataMeta(jsonData)    
 
