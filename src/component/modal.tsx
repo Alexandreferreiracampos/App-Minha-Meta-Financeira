@@ -48,7 +48,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                 ],
                 meta: convertForInt(currency),
                 saldo:0,
-                porcent:0 
+                porcent:0,
+                visible:false,
             }
         )
         storeData(value)    

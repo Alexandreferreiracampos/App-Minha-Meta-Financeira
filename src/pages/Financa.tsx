@@ -18,8 +18,7 @@ export default function Financa({route}) {
     const [balance, setBalance] = useState('');
     const [deposit, setDeposit] = useState('');
     const [withdrawal, setWithdrawal] = useState('');
-    const [goal, setGoal] = useState('0');
-    const [progress, setProgress] = useState('95');
+    const [progress, setProgress] = useState(0);
     const [dataMeta, setDataMeta] = useState()
     const [modalDepositoActive, setModalDepositoAtive] = useState(false);
     const [modalRetiradaActive, setModalRetiradaAtive] = useState(false);
@@ -30,7 +29,7 @@ export default function Financa({route}) {
     
     useEffect(()=>{
         data()
-    },[])
+    },[balance])
 
     const data = () => {
         setModalDepositoAtive(false)
@@ -51,7 +50,16 @@ export default function Financa({route}) {
         const index = value.findIndex((element:any) => element.id == route.params.id)
         value[index].saldo = convertForInt(balance)
         let porecent = value[index].saldo / value[index].meta * 100
-        value[index].porcent = porecent
+        
+        if(porecent >= 100){
+            value[index].visible = true
+            value[index].porcent = 100
+        }
+        if(porecent < 100){
+            value[index].visible = false
+            value[index].porcent = porecent
+        }
+        setProgress(jsonData[index].porcent)
         storeData(value)
     }
 
@@ -60,7 +68,7 @@ export default function Financa({route}) {
 
             const jsonData = JSON.stringify(value)
             await AsyncStorage.setItem('@financa:data', jsonData)
-            
+
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(
                 `Não foi possivel salvar os dados${e}`,
@@ -88,7 +96,7 @@ export default function Financa({route}) {
         let somaBalanca = dataSomaDeposito - dataSomaRetirada
         let dataSomaDepositoString = String(somaBalanca)
         setBalance(maskCurrency(dataSomaDepositoString))
-        
+         
     }
 
     const somarDepositos= async ()=>{
@@ -100,12 +108,7 @@ export default function Financa({route}) {
             dataSomaDeposito = jsonData[index].deposito[i].valor + dataSomaDeposito          
         }
         let dataSomaDepositoString = String(dataSomaDeposito)
-        setDeposit(maskCurrency(dataSomaDepositoString))
-
-        
-        
-        
-        
+        setDeposit(maskCurrency(dataSomaDepositoString))   
     }
     const somarRetiradas= async ()=>{
         const data = await AsyncStorage.getItem('@financa:data') || ''
@@ -179,7 +182,7 @@ export default function Financa({route}) {
 
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color:'#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight:'bold' }}>Você guardou até agora</Text>
-                    <Text style={{ color:'#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight:'bold' }}>{progress}%</Text>
+                    <Text style={{ color:'#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight:'bold' }}>{progress.toFixed(1)}%</Text>
                 </View>
 
                 <View style={styles.barraProgresso}>

@@ -81,6 +81,7 @@ export default function Home() {
                             meta={item.meta}
                             date={item.date}
                             porcent={item.porcent}
+                            visible={item.visible}
                             lerDados={() => abrirMeta(item)} />
                     }
                     keyExtractor={(item) => item.id}
