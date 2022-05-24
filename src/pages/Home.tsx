@@ -13,6 +13,7 @@ export default function Home() {
     const [updateFlastlist, setUpdateFlastlist] = useState(true)
     const [modalActive, setModalAtive] = useState(false);
     const [dataMeta, setDataMeta] = useState()
+    const [load, setLoad] = useState(true)
     const navigation = useNavigation();
 
     const readData = async () => {
@@ -21,8 +22,7 @@ export default function Home() {
 
             const data = await AsyncStorage.getItem('@financa:data') || ''
             const jsonData = JSON.parse(data)
-            setDataMeta(jsonData)
-            
+            setDataMeta(jsonData)    
 
         } catch (e) {
             setDataMeta({
@@ -43,7 +43,9 @@ export default function Home() {
                         date: ''
                     },
                 ],
-                meta: 0
+                meta: 0,
+                saldo:0,
+                porcent:0
             })
         }
 
@@ -52,8 +54,8 @@ export default function Home() {
 
     useEffect(() => {
         readData()
-        
-    }, [])
+        navigation.addListener('focus', ()=>setLoad(!load))
+    }, [load, navigation])
 
     const data = () => {
         setModalAtive(false)
@@ -75,9 +77,10 @@ export default function Home() {
                     renderItem={({ item }) =>
                         <CardMeta
                             title={item.title}
-                            saldo={item.deposito[0].valor - item.retirada[0].valor}
+                            saldo={item.saldo}
                             meta={item.meta}
                             date={item.date}
+                            porcent={item.porcent}
                             lerDados={() => abrirMeta(item)} />
                     }
                     keyExtractor={(item) => item.id}

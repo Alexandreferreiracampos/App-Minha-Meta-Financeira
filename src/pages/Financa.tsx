@@ -27,7 +27,10 @@ export default function Financa({route}) {
 
     const [visibleBalance, setVisibleBalance] = useState('eye-outline')
     const [visibleBalancevalue, setVisibleBalancevalue] = useState(balance)
-
+    
+    useEffect(()=>{
+        data()
+    },[])
 
     const data = () => {
         setModalDepositoAtive(false)
@@ -38,8 +41,36 @@ export default function Financa({route}) {
     }
 
     useEffect(()=>{
-        data()
-    },[])
+        salvarSaldo()
+    },[balance])
+
+    const salvarSaldo = async ()=>{
+        const data = await AsyncStorage.getItem('@financa:data') || ''
+        const jsonData = JSON.parse(data)
+        const value = jsonData
+        const index = value.findIndex((element:any) => element.id == route.params.id)
+        value[index].saldo = convertForInt(balance)
+        let porecent = value[index].saldo / value[index].meta * 100
+        value[index].porcent = porecent
+        storeData(value)
+    }
+
+    const storeData = async (value: any) => {
+        try {
+
+            const jsonData = JSON.stringify(value)
+            await AsyncStorage.setItem('@financa:data', jsonData)
+            
+        } catch (e) {
+            ToastAndroid.showWithGravityAndOffset(
+                `Não foi possivel salvar os dados${e}`,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
+        }
+    }
+
+
 
     
     const somarBalance = async ()=>{
@@ -60,7 +91,7 @@ export default function Financa({route}) {
         
     }
 
-    const somarDepositos= async (item:any)=>{
+    const somarDepositos= async ()=>{
         const data = await AsyncStorage.getItem('@financa:data') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element:any) => element.id == route.params.id)
@@ -76,7 +107,7 @@ export default function Financa({route}) {
         
         
     }
-    const somarRetiradas= async (item:any)=>{
+    const somarRetiradas= async ()=>{
         const data = await AsyncStorage.getItem('@financa:data') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element:any) => element.id == route.params.id)
@@ -89,8 +120,6 @@ export default function Financa({route}) {
         somarBalance()
           
     }
-
-
 
     const BalanceVisible = () => {
         if (visibleBalance == "eye-off-outline") {

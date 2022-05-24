@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TouchableOpacityProps} from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { calcularValor, convertForInt, maskCurrency } from "./function";
@@ -9,14 +9,26 @@ interface cardMetaProps extends TouchableOpacityProps {
     date:string;
     saldo:number;
     meta:string;
+    porcent:number;
     lerDados:()=>void;
     
 }
 
-export default function cardMeta({ title,lerDados, date, saldo, meta,...rest }: cardMetaProps) {
-    const [progress, setProgress] = useState(23);
-    const [ProgressBarValue, setProgressBarValue] = useState(23);
+export default function cardMeta({ title,lerDados, date, saldo, meta, porcent,...rest }: cardMetaProps) {
+
+    const [porcentMeta, SetPorcentMeta] = useState(0)
+
     let metaString = String(meta)
+    let saldoString = String(saldo)
+    
+    useEffect(()=>{
+        if(porcent < 100){
+            SetPorcentMeta(porcent)
+        }else{
+            SetPorcentMeta(100)
+        }
+
+    }, [saldo])
 
 
     return (
@@ -28,7 +40,7 @@ export default function cardMeta({ title,lerDados, date, saldo, meta,...rest }: 
                 <View style={{bottom:-15}}>
                 <View style={styles.ProgressBar}>
                     <View style={{
-                        width: ProgressBarValue + '%',
+                        width: porcentMeta + '%',
                         height: '100%',
                         borderRadius: 28,
                         justifyContent: 'center',
@@ -39,7 +51,7 @@ export default function cardMeta({ title,lerDados, date, saldo, meta,...rest }: 
                 </View>
             <View style={{width:'100%', justifyContent: 'space-between', flexDirection:'row'}}>
             <Text style={{fontSize:14, color: '#868686',fontWeight: 'bold',}}>
-                R$ {saldo}
+                R$ {maskCurrency(saldoString)}
                 </Text>
             <Text style={{fontSize:16, color: '#868686',fontWeight: 'bold',}}>
                 
