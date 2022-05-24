@@ -10,6 +10,7 @@ import ScreenModalDeposito from "../component/modalDeposito";
 import ScreenModalRetirada from "../component/modalRetirada";
 import { calcularValor, convertForInt, maskCurrency } from "../component/function";
 import { FlatList } from 'react-native-gesture-handler';
+import LottieView from 'lottie-react-native';
 
 export default function Financa({ route }) {
 
@@ -22,7 +23,14 @@ export default function Financa({ route }) {
     const [modalRetiradaActive, setModalRetiradaAtive] = useState(false);
     const [updateFlastlist, setUpdateFlastlist] = useState(true)
     const [visible, setVisible] = useState(true);
+    const [visibleAnimatino, setVisibleAnimatino] = useState(true);
     const [visibleBalance, setVisibleBalance] = useState('eye-outline');
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            setVisibleAnimatino(false)
+        },500)
+    },[])
     
     useEffect(() => {
         data()
@@ -115,10 +123,17 @@ export default function Financa({ route }) {
         somarBalance()
 
     }
-
+    
     return (
+        
         <View style={styles.container}>
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
+        { visibleAnimatino && <View style={{width:'100%', height:'100%'}}>
+          <LottieView
+        source={require('../../assets/money.json')}
+          autoPlay
+         />
+         </View>}
             <ScreenModalDeposito statusModal={modalDepositoActive} deposit={() => data()} changeStatusModal={() => setModalDepositoAtive(false)} id={route.params.id} />
             <ScreenModalRetirada statusModal={modalRetiradaActive} deposit={() => data()} changeStatusModal={() => setModalRetiradaAtive(false)} id={route.params.id} />
             <View style={styles.header}>
@@ -214,6 +229,7 @@ export default function Financa({ route }) {
             />}
                 
             </View>
+            
         </View>
     )
 
