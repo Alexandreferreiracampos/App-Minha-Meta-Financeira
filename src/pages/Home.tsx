@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet, SafeAreaView, StatusBar, Platform, FlatList, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, SafeAreaView, StatusBar, Platform, FlatList, ToastAndroid, Alert} from 'react-native';
 import CardMeta from "../component/cardMeta";
 import { AntDesign } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import ScreenModal from "../component/modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { convertForInt } from "../component/function";
 import { useNavigation } from '@react-navigation/core'
+import * as LocalAuthentication from 'expo-local-authentication';
+
 
 export default function Home() {
+
+
 
     const [updateFlastlist, setUpdateFlastlist] = useState(true)
     const [modalActive, setModalAtive] = useState(false);
@@ -22,7 +25,7 @@ export default function Home() {
 
             const data = await AsyncStorage.getItem('@financa:data10') || ''
             const jsonData = JSON.parse(data)
-            setDataMeta(jsonData)    
+            setDataMeta(jsonData)
 
         } catch (e) {
             setDataMeta({
@@ -44,8 +47,8 @@ export default function Home() {
                     },
                 ],
                 meta: 0,
-                saldo:0,
-                porcent:0
+                saldo: 0,
+                porcent: 0
             })
         }
 
@@ -54,7 +57,7 @@ export default function Home() {
 
     useEffect(() => {
         readData()
-        navigation.addListener('focus', ()=>setLoad(!load))
+        navigation.addListener('focus', () => setLoad(!load))
     }, [load, navigation])
 
     const data = () => {
@@ -65,12 +68,72 @@ export default function Home() {
 
     const abrirMeta = (item: any) => {
         navigation.navigate("Financa", item)
-       
+
     }
+
+    const deletarItemExtrato = async (item: any) => {
+        Alert.alert(
+            `Tem certeza de que deseja excluir a Meta ${item.title} ?`,
+            'Excluir',
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: () => biometric() }
+            ]
+        );
+
+        const biometric = async () => {
+
+
+            const authenticationBiometric = await LocalAuthentication.authenticateAsync({
+                promptMessage: `Excluir Meta ${item.title} ?`,
+                cancelLabel: "Cancelar",
+                disableDeviceFallback: false,
+            });
+
+            if (authenticationBiometric.success) {
+                excluir()
+            }
+
+        };
+
+        const excluir = async () => {
+            const data = await AsyncStorage.getItem('@financa:data10') || ''
+            const jsonData = JSON.parse(data)
+            const index = jsonData.findIndex((element: any) => element.id == item.id)
+            jsonData.splice(index, 1)
+            storeData(jsonData)
+        }
+    }
+  
+
+    const storeData = async (value: any) => {
+        try {
+
+            const jsonData = JSON.stringify(value)
+            await AsyncStorage.setItem('@financa:data10', jsonData)
+            readData()
+            setUpdateFlastlist(!updateFlastlist)
+
+        } catch (e) {
+            ToastAndroid.showWithGravityAndOffset(
+                `Não foi possivel salvar os dados${e}`,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
+        }
+    }
+
     return (
-        <SafeAreaView style={styles.container}>
+        
+        < SafeAreaView style={styles.container}>
+            
             <StatusBar backgroundColor='#cdcdcd' barStyle="dark-content" />
+            
             <ScreenModal statusModal={modalActive} deposit={() => data()} changeStatusModal={() => setModalAtive(false)} />
+        
             <View style={styles.listCard}>
                 <FlatList
                     data={dataMeta}
@@ -82,7 +145,9 @@ export default function Home() {
                             date={item.date}
                             porcent={item.porcent}
                             visible={item.visible}
-                            lerDados={() => abrirMeta(item)} />
+                            lerDados={() => abrirMeta(item)}
+                            longPress={() => deletarItemExtrato(item)}
+                        />
                     }
                     keyExtractor={(item) => item.id}
                     extraData={updateFlastlist}
@@ -91,7 +156,9 @@ export default function Home() {
             <TouchableOpacity style={{ bottom: '4%', left: '82%' }} onPress={() => setModalAtive(true)}>
                 <AntDesign name="pluscircle" size={RFPercentage(7)} color="green" />
             </TouchableOpacity>
+           
         </SafeAreaView>
+        
     )
 }
 
@@ -100,7 +167,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#cdcdcd',
         justifyContent: 'space-between',
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     listCard: {
         width: '100%',

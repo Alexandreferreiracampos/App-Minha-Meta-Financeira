@@ -30,7 +30,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
             const value = []
             value.push(
                 {
-                    id: 0,
+                    id: Date(),
                     title: title,
                     date: date,
                     deposito: [
@@ -52,7 +52,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
             const incrementId = value.length + 1
             value.push(
                 {
-                    id: incrementId,
+                    id: Date(),
                     title: title,
                     date: date,
                     deposito: [

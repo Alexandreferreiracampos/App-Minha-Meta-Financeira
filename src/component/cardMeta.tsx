@@ -13,16 +13,17 @@ interface cardMetaProps extends TouchableOpacityProps {
     porcent: number;
     visible:boolean
     lerDados: () => void;
+    longPress:()=> void;
 
 }
 
-export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,visible, ...rest }: cardMetaProps) {
+export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,visible,longPress, ...rest }: cardMetaProps) {
 
     let metaString = String(meta)
     let saldoString = String(saldo)
 
     return (
-        <TouchableOpacity {...rest} style={styles.container} onPress={lerDados}>
+        <TouchableOpacity {...rest} style={styles.container} onPress={lerDados} onLongPress={longPress}>
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                 <View >
                     <Text style={styles.text}>{title}</Text>

@@ -21,6 +21,11 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
     const [currency, setCurrency] = useState('');
     const [title, setTitle] = useState('');
 
+    const limparImput=()=>{
+        setCurrency('')
+        setTitle('')
+    }
+
     const salvarMeta = async () => {
         const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
@@ -36,7 +41,6 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
         let somaBalanca = dataSomaDeposito - dataSomaRetirada
         let retirada = convertForInt(currency)
        
-        console.log(retirada)
         if( somaBalanca >= retirada){
             const data = await AsyncStorage.getItem('@financa:data10')
         const jsonData = JSON.parse(data)
@@ -47,7 +51,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
         let dados = value[index]
 
-        dados.retirada.push({
+        dados.retirada.push({s
             "date": new Date(),
             "nome": title,
             "valor": convertForInt(currency),
@@ -75,8 +79,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
             const jsonData = JSON.stringify(value)
             await AsyncStorage.setItem('@financa:data10', jsonData)
-            console.log(value)
             deposit()
+            limparImput()
 
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(

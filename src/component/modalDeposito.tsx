@@ -21,6 +21,11 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
     const [currency, setCurrency] = useState('');
     const [title, setTitle] = useState('');
 
+    const limparImput=()=>{
+        setCurrency('')
+        setTitle('')
+    }
+
     const salvarMeta = async () => {
         const data = await AsyncStorage.getItem('@financa:data10')
         const jsonData = JSON.parse(data)
@@ -51,10 +56,11 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
             const jsonData = JSON.stringify(value)
             await AsyncStorage.setItem('@financa:data10', jsonData)
-            console.log(value)
             deposit()
+            limparImput()
 
         } catch (e) {
+
             ToastAndroid.showWithGravityAndOffset(
                 `Não foi possivel salvar os dados${e}`,
                 ToastAndroid.LONG,
