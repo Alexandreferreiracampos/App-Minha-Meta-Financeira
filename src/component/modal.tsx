@@ -22,53 +22,71 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
     const [date, setDate] = useState('');
     const [title, setTitle] = useState('');
 
+
+    const limparImput=()=>{
+        setCurrency('')
+        setTitle('')
+        setDate('')
+    }
+
+
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data10')
-        const jsonData = JSON.parse(data)
-        if (jsonData == null) {
-
-            const value = []
-            value.push(
-                {
-                    id: Date(),
-                    title: title,
-                    date: date,
-                    deposito: [
-                        
-                    ],
-                    retirada: [
-                       
-                    ],
-                    meta: convertForInt(currency),
-                    saldo: 0,
-                    porcent: 0,
-                    visible: false,
-                }
-            )
-            storeData(value)
-
-        } else {
-            const value = jsonData
-            const incrementId = value.length + 1
-            value.push(
-                {
-                    id: Date(),
-                    title: title,
-                    date: date,
-                    deposito: [
-                       
-                    ],
-                    retirada: [
-                       
-                    ],
-                    meta: convertForInt(currency),
-                    saldo: 0,
-                    porcent: 0,
-                    visible: false,
-                }
-            )
-            storeData(value)
-        }
+        if(title != '' && date != '' && currency != '' ){
+            const data = await AsyncStorage.getItem('@financa:data10')
+            const jsonData = JSON.parse(data)
+            if (jsonData == null) {
+    
+                const value = []
+                value.push(
+                    {
+                        id: Date(),
+                        title: title,
+                        date: date,
+                        deposito: [
+                            
+                        ],
+                        retirada: [
+                           
+                        ],
+                        meta: convertForInt(currency),
+                        saldo: 0,
+                        porcent: 0,
+                        visible: false,
+                    }
+                )
+                storeData(value)
+    
+            } else {
+                const value = jsonData
+                const incrementId = value.length + 1
+                value.push(
+                    {
+                        id: Date(),
+                        title: title,
+                        date: date,
+                        deposito: [
+                           
+                        ],
+                        retirada: [
+                           
+                        ],
+                        meta: convertForInt(currency),
+                        saldo: 0,
+                        porcent: 0,
+                        visible: false,
+                    }
+                )
+                storeData(value)
+            }
+    
+        }else{
+            ToastAndroid.showWithGravityAndOffset(
+                `Informe todos os campos`,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
+            }
+           
     }
 
     const storeData = async (value: any) => {
@@ -78,6 +96,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
             await AsyncStorage.setItem('@financa:data10', jsonData)
 
             deposit()
+            limparImput()
 
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(

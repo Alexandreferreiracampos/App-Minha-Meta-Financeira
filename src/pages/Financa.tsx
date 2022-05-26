@@ -15,8 +15,8 @@ export default function Financa({ route }) {
 
     const balanceNone = '******';
     const [balance, setBalance] = useState('');
-    const [deposit, setDeposit] = useState('');
-    const [withdrawal, setWithdrawal] = useState('');
+    const [deposit, setDeposit] = useState();
+    const [withdrawal, setWithdrawal] = useState();
     const [progress, setProgress] = useState(0);
     const [modalDepositoActive, setModalDepositoAtive] = useState(false);
     const [modalRetiradaActive, setModalRetiradaAtive] = useState(false);
@@ -25,30 +25,30 @@ export default function Financa({ route }) {
     const [visibleAnimatino, setVisibleAnimatino] = useState(true);
     const [dataDeposito, setDataDeposito] = useState();
     const [dataRetirada, setDataRetirada] = useState();
-   
 
 
-    const readData = async ()=>{
-            const data = await AsyncStorage.getItem('@financa:data10') || ''
-            const jsonData = JSON.parse(data)
-            setDataDeposito(jsonData[0].deposito)
-            setDataRetirada(jsonData[0].retirada)
-            setUpdateFlastlist(!updateFlastlist)
+
+    const readData = async () => {
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
+        const jsonData = JSON.parse(data)
+        setDataDeposito(jsonData[0].deposito.reverse())
+        setDataRetirada(jsonData[0].retirada.reverse())
+        setUpdateFlastlist(!updateFlastlist)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         readData()
-        setTimeout(()=>{
+        setTimeout(() => {
             setVisibleAnimatino(false)
-        },700)
-    },[])
-    
+        }, 700)
+    }, [])
+
     useEffect(() => {
         data()
         salvarSaldo()
     }, [balance])
 
-    
+
 
     const data = () => {
         setModalDepositoAtive(false)
@@ -76,7 +76,7 @@ export default function Financa({ route }) {
         }
         setProgress(jsonData[index].porcent)
         storeData(value)
-        
+
     }
 
     const storeData = async (value: any) => {
@@ -86,7 +86,7 @@ export default function Financa({ route }) {
             await AsyncStorage.setItem('@financa:data10', jsonData)
             data()
             readData()
-     
+
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(
                 `Não foi possivel salvar os dados${e}`,
@@ -121,7 +121,7 @@ export default function Financa({ route }) {
         for (let i = 0; i < jsonData[index].deposito.length; i++) {
             dataSomaDeposito = jsonData[index].deposito[i].valor + dataSomaDeposito
         }
-        setDeposit(maskCurrency(String(dataSomaDeposito)))
+        setDeposit(dataSomaDeposito)
     }
     const somarRetiradas = async () => {
         const data = await AsyncStorage.getItem('@financa:data10') || ''
@@ -131,93 +131,95 @@ export default function Financa({ route }) {
         for (let i = 0; i < jsonData[index].retirada.length; i++) {
             dataSomaDeposito = jsonData[index].retirada[i].valor + dataSomaDeposito
         }
-        setWithdrawal(maskCurrency(String(dataSomaDeposito)))
+        setWithdrawal(dataSomaDeposito)
         somarBalance()
 
     }
 
-    const deletarItemDeposito= async (item:any)=>{
+    const deletarItemDeposito = async (item: any) => {
         Alert.alert(
             `Tem certeza de que deseja excluir esse lançamento ${item.nome} ?`,
             'Excluir',
             [
-              {
-                text: "Cancelar",
-                style: "cancel"
-              },
-              { text: "Excluir", onPress: () => biometric() }
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: () => biometric() }
             ]
-          );
+        );
 
-          const biometric = async () => {
+        const biometric = async () => {
 
             const authenticationBiometric = await LocalAuthentication.authenticateAsync({
                 promptMessage: `Excluir Meta ${item.title} ?`,
                 cancelLabel: "Cancelar",
                 disableDeviceFallback: false,
             });
-    
+
             if (authenticationBiometric.success) {
                 excluir()
             }
-    
+
         };
-        const excluir = async ()=>{
-        const data = await AsyncStorage.getItem('@financa:data10') || ''
-        const jsonData = JSON.parse(data)
-        const index = jsonData.findIndex((element: any) => element.id == route.params.id)
-        const indexDeposito = jsonData[index].deposito.findIndex((element: any) => element.date == item.date)
-        jsonData[index].deposito.splice(indexDeposito, 1)
-        storeData(jsonData)
+        const excluir = async () => {
+
+            const data = await AsyncStorage.getItem('@financa:data10') || ''
+            const jsonData = JSON.parse(data)
+            const index = jsonData.findIndex((element: any) => element.id == route.params.id)
+            const indexDeposito = jsonData[index].deposito.findIndex((element: any) => element.date == item.date)
+            jsonData[index].deposito.splice(indexDeposito, 1)
+            storeData(jsonData)
+
+        }
     }
-    }
-    const deletarItemRetirada= async (item:any)=>{
+    const deletarItemRetirada = async (item: any) => {
         Alert.alert(
             `Tem certeza de que deseja excluir lançamento ${item.nome} ?`,
             'Excluir',
             [
-              {
-                text: "Cancelar",
-                style: "cancel"
-              },
-              { text: "Excluir", onPress: () => biometric() }
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: () => biometric() }
             ]
-          );
+        );
 
-          const biometric = async () => {
+        const biometric = async () => {
 
             const authenticationBiometric = await LocalAuthentication.authenticateAsync({
                 promptMessage: `Excluir Meta ${item.title} ?`,
                 cancelLabel: "Cancelar",
                 disableDeviceFallback: false,
             });
-    
+
             if (authenticationBiometric.success) {
                 excluir()
             }
         };
 
-          const excluir = async ()=>{
+        const excluir = async () => {
             const data = await AsyncStorage.getItem('@financa:data10') || ''
             const jsonData = JSON.parse(data)
             const index = jsonData.findIndex((element: any) => element.id == route.params.id)
             const indexRetirada = jsonData[index].retirada.findIndex((element: any) => element.date == item.date)
             jsonData[index].retirada.splice(indexRetirada, 1)
-            storeData(jsonData)   
-          }
+            storeData(jsonData)
+        }
 
     }
 
     return (
-        
+
         <View style={styles.container}>
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
-        { visibleAnimatino && <View style={{width:'100%', height:'100%'}}>
-          <LottieView
-        source={require('../../assets/money.json')}
-          autoPlay
-         />
-         </View>}
+            {visibleAnimatino && <View style={{ width: '100%', height: '100%' }}>
+                <LottieView
+                    source={require('../../assets/money.json')}
+                    autoPlay
+                />
+            </View>}
             <ScreenModalDeposito statusModal={modalDepositoActive} deposit={() => data()} changeStatusModal={() => setModalDepositoAtive(false)} id={route.params.id} />
             <ScreenModalRetirada statusModal={modalRetiradaActive} deposit={() => data()} changeStatusModal={() => setModalRetiradaAtive(false)} id={route.params.id} />
             <View style={styles.header}>
@@ -231,7 +233,7 @@ export default function Financa({ route }) {
                         <FontAwesome name="arrow-circle-up" size={RFPercentage(4.5)} color="green" style={{ paddingEnd: 13 }} />
                         <View >
                             <Text style={{ color: '#868686', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>Entrada</Text>
-                            <Text style={{ color: 'green', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}>R$ {deposit}</Text>
+                            <Text style={{ color: 'green', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}>R$ {maskCurrency(String(deposit))}</Text>
                         </View>
                     </TouchableOpacity >
 
@@ -241,14 +243,14 @@ export default function Financa({ route }) {
                         <FontAwesome name="arrow-circle-down" size={RFPercentage(4.5)} color="red" style={{ paddingEnd: 13 }} />
                         <View>
                             <Text style={{ color: '#868686', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>saída</Text>
-                            <Text style={{ color: 'red', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}> R$ {withdrawal}</Text>
+                            <Text style={{ color: 'red', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}> R$ {maskCurrency(String(withdrawal))}</Text>
                         </View>
                     </TouchableOpacity >
 
                 </View>
 
             </View>
-           
+
             <View style={styles.cardProgresso}>
 
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -269,51 +271,51 @@ export default function Financa({ route }) {
                 </View>
             </View>
             <View style={styles.cardExtrato}>
-                <View style={{ top:-10,borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                <View style={{ top: -10, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
                     <View>
-                        <TouchableOpacity onPress={()=>setVisible(true)} style={{ width: 150, height: 50,borderRadius:10, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => setVisible(true)} style={{ width: 150, height: 50, borderRadius: 10, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ color: 'white', fontWeight: 'bold' }}> Extrato Depositos</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={()=>setVisible(false)} style={{ width: 150, height: 50, borderRadius:10, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => setVisible(false)} style={{ width: 150, height: 50, borderRadius: 10, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Extrato Retiradas</Text>
                     </TouchableOpacity>
                 </View>
-                { visible && 
-                <FlatList
-                data={dataDeposito}
-                renderItem={({ item }) =>
-                    <TouchableOpacity onLongPress={()=>{deletarItemDeposito(item)}} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
-                        <View>
-                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
-                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
-                        </View>
-                        <Text style={{ color: 'green', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
-                    </TouchableOpacity>
-                }
-                keyExtractor={(item) => item.name}
-                extraData={updateFlastlist}
+                {visible &&
+                    <FlatList
+                        data={dataDeposito}
+                        renderItem={({ item }) =>
+                            <TouchableOpacity onLongPress={() => { deletarItemDeposito(item) }} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                                <View>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
+                                </View>
+                                <Text style={{ color: 'green', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
+                            </TouchableOpacity>
+                        }
+                        keyExtractor={(item) => item.name}
+                        extraData={updateFlastlist}
 
-            />}
-            { !visible && 
-                <FlatList
-                data={dataRetirada}
-                renderItem={({ item }) =>
-                    <TouchableOpacity onLongPress={()=>{deletarItemRetirada(item)}} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
-                        <View>
-                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
-                            <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
-                        </View>
-                        <Text style={{ color: 'red', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
-                    </TouchableOpacity>
-                }
-                keyExtractor={(item) => item.name}
-                extraData={updateFlastlist}
+                    />}
+                {!visible &&
+                    <FlatList
+                        data={dataRetirada}
+                        renderItem={({ item }) =>
+                            <TouchableOpacity onLongPress={() => { deletarItemRetirada(item) }} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                                <View>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
+                                </View>
+                                <Text style={{ color: 'red', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
+                            </TouchableOpacity>
+                        }
+                        keyExtractor={(item) => item.name}
+                        extraData={updateFlastlist}
 
-            />}
-                
+                    />}
+
             </View>
-            
+
         </View>
     )
 

@@ -27,7 +27,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
     }
 
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data10') || ''
+        if (title != '' && currency != '') {
+            const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
         const index = jsonData.findIndex((element:any) => element.id == id)
         let dataSomaDeposito = 0
@@ -51,7 +52,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
         let dados = value[index]
 
-        dados.retirada.push({s
+        dados.retirada.push({
             "date": new Date(),
             "nome": title,
             "valor": convertForInt(currency),
@@ -69,6 +70,14 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                 ToastAndroid.CENTER,
                 25, 50)
         }
+        }else{
+            ToastAndroid.showWithGravityAndOffset(
+                `Informe todos os campos`,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
+        }
+        
         
     }
 
@@ -103,7 +112,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                 <View style={styles.outerView} onPress={() => changeStatusModal()}>
                     <KeyboardAvoidingView style={styles.modalView} behavior='padding'>
                         <View style={{ width: RFPercentage(30), height: RFPercentage(5), top: RFPercentage(2), justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
-                            <AntDesign onPress={() => changeStatusModal()} name="back" size={34} color='green' />
+                            <AntDesign onPress={() => changeStatusModal()} name="back" size={34} color='red' />
                             <Text style={{ fontSize: RFPercentage(3), fontWeight: 'bold', color: 'red' }}>Retirar</Text>
                         </View>
                         <View style={{ width: '100%', height: '80%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -132,7 +141,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                                 />
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.buttonSalvar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Salvar</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonRetirar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Retirar</Text></TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View >
             </TouchableWithoutFeedback>
@@ -171,6 +180,15 @@ const styles = StyleSheet.create({
         width: "50%",
         height: "18%",
         backgroundColor: '#39d76c',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 18,
+        bottom: RFPercentage(4)
+    },
+    buttonRetirar: {
+        width: "50%",
+        height: "18%",
+        backgroundColor: 'red',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 18,

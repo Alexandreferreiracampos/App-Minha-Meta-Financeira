@@ -13,40 +13,49 @@ interface ButtonProps extends TouchableOpacityProps {
     statusModal: boolean;
     deposit: () => void;
     changeStatusModal: () => void;
-    id:number
+    id: number
 
 }
-export default function ScreenModal({ statusModal, deposit, changeStatusModal,id, ...rest }: ButtonProps) {
+export default function ScreenModal({ statusModal, deposit, changeStatusModal, id, ...rest }: ButtonProps) {
 
     const [currency, setCurrency] = useState('');
     const [title, setTitle] = useState('');
 
-    const limparImput=()=>{
+    const limparImput = () => {
         setCurrency('')
         setTitle('')
     }
 
     const salvarMeta = async () => {
-        const data = await AsyncStorage.getItem('@financa:data10')
-        const jsonData = JSON.parse(data)
+        if (title != '' && currency != '') {
+            const data = await AsyncStorage.getItem('@financa:data10')
+            const jsonData = JSON.parse(data)
 
-        const value = jsonData
+            const value = jsonData
 
-        const index = value.findIndex((element:any) => element.id == id)
+            const index = value.findIndex((element: any) => element.id == id)
 
-        let dados = value[index]
+            let dados = value[index]
 
-        dados.deposito.push({
-            "date": new Date(),
-            "nome": title,
-            "valor": convertForInt(currency),
-          },)
-        
-          storeData(value)
-         
-        deposit()
+            dados.deposito.push({
+                "date": new Date(),
+                "nome": title,
+                "valor": convertForInt(currency),
+            })
 
-       
+            storeData(value)
+
+            deposit()
+
+
+        } else { 
+            ToastAndroid.showWithGravityAndOffset(
+                `Informe todos os campos`,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25, 50)
+        }
+
     }
 
 
@@ -96,7 +105,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                                     onChangeText={(text: string) => setTitle(text)}
                                 />
                             </View>
-        
+
                             <View style={styles.containerInput}>
                                 <MaterialIcons name="attach-money" size={24} color='#868686' />
                                 <Input
@@ -110,7 +119,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                                 />
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.buttonSalvar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Salvar</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonSalvar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Depositar</Text></TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View >
             </TouchableWithoutFeedback>
