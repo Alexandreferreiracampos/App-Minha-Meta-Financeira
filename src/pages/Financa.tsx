@@ -31,8 +31,10 @@ export default function Financa({ route }) {
     const readData = async () => {
         const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
-        setDataDeposito(jsonData[0].deposito.reverse())
-        setDataRetirada(jsonData[0].retirada.reverse())
+        const value = jsonData
+        const index = value.findIndex((element: any) => element.id == route.params.id)
+        setDataDeposito(jsonData[index].deposito.reverse())
+        setDataRetirada(jsonData[index].retirada.reverse())
         setUpdateFlastlist(!updateFlastlist)
     }
 
