@@ -45,10 +45,11 @@ const styles = StyleSheet.create({
   input: {
     height: 54,
     width: 200,
-    backgroundColor: "#FFF",
+    backgroundColor: "white",
     borderRadius: 8,
     paddingHorizontal: 16,
     marginTop: 4,
     fontSize: 14,
+    color:'white'
   },
 });

@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
         height: 350,
         justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: "#000",
+        elevation: 1,
     },
     containerInput: {
         width: '100%',

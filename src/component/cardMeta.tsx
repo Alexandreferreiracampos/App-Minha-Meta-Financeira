@@ -27,10 +27,10 @@ export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,v
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                 <View >
                     <Text style={styles.text}>{title}</Text>
-                    <Text style={{ fontSize: 14, color: '#868686', fontWeight: 'bold', }}>{date}</Text>
+                    <Text style={{ fontSize: 14, color: '#606060', fontWeight: 'bold', }}>{date}</Text>
                 </View>
                 <View>
-                    { visible && <Entypo name="check" size={24} color="green" />}
+                    { visible && <Entypo name="check" size={24} color="#09AB4F" />}
                 </View>
             </View>
             <View style={{ bottom: -15 }}>
@@ -41,15 +41,15 @@ export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,v
                         borderRadius: 28,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: 'green'
+                        backgroundColor: '#09AB4F'
                     }}>
                     </View>
                 </View>
                 <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
-                    <Text style={{ fontSize: 14, color: '#868686', fontWeight: 'bold', }}>
+                    <Text style={{ fontSize: 14, color: '#606060', fontWeight: 'bold', }}>
                         R$ {maskCurrency(saldoString)}
                     </Text>
-                    <Text style={{ fontSize: 16, color: '#868686', fontWeight: 'bold', }}>
+                    <Text style={{ fontSize: 16, color: '#606060', fontWeight: 'bold', }}>
 
                         R$ {maskCurrency(metaString)}
                     </Text>
@@ -64,25 +64,18 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: 130,
-        backgroundColor: 'rgb(243,243,243)',
+        backgroundColor: 'white',
         justifyContent: 'space-between',
         flexDirection: 'column',
         padding: 10,
         marginBottom: 10,
-        borderRadius: 15,
+        borderRadius: 10,
         shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.22,
-        shadowRadius: 1.22,
-        elevation: 3,
-
+        elevation: 1,
     },
     text: {
         fontSize: 21,
-        color: '#868686',
+        color: '#606060',
         fontWeight: 'bold',
 
     },
@@ -91,6 +84,6 @@ const styles = StyleSheet.create({
         height: '22%',
         borderRadius: 18,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'rgb(243,243,243)'
     },
 })

@@ -154,7 +154,7 @@ export default function Financa({ route }) {
         const biometric = async () => {
 
             const authenticationBiometric = await LocalAuthentication.authenticateAsync({
-                promptMessage: `Excluir Meta ${item.title} ?`,
+                promptMessage: `Excluir ${item.nome} ?`,
                 cancelLabel: "Cancelar",
                 disableDeviceFallback: false,
             });
@@ -191,7 +191,7 @@ export default function Financa({ route }) {
         const biometric = async () => {
 
             const authenticationBiometric = await LocalAuthentication.authenticateAsync({
-                promptMessage: `Excluir Meta ${item.title} ?`,
+                promptMessage: `Excluir ${item.nome} ?`,
                 cancelLabel: "Cancelar",
                 disableDeviceFallback: false,
             });
@@ -216,7 +216,8 @@ export default function Financa({ route }) {
 
         <View style={styles.container}>
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
-            {visibleAnimatino && <View style={{ width: '100%', height: '100%' }}>
+            {visibleAnimatino && <View style={{ width: '100%', height: '100%', backgroundColor: 'rgb(243,243,243)' }}>
+                <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
                 <LottieView
                     source={require('../../assets/money.json')}
                     autoPlay
@@ -225,17 +226,17 @@ export default function Financa({ route }) {
             <ScreenModalDeposito statusModal={modalDepositoActive} deposit={() => data()} changeStatusModal={() => setModalDepositoAtive(false)} id={route.params.id} />
             <ScreenModalRetirada statusModal={modalRetiradaActive} deposit={() => data()} changeStatusModal={() => setModalRetiradaAtive(false)} id={route.params.id} />
             <View style={styles.header}>
-                <View><Text style={{ color: '#868686', fontWeight: 'bold', fontSize: RFPercentage(1.8), top: -10 }}>{route.params.title}</Text></View>
+                <View><Text style={{ color: '#606060', fontWeight: 'bold', fontSize: RFPercentage(1.8), top: -10 }}>{route.params.title}</Text></View>
                 <View style={styles.containerBalance}>
                     <Text style={styles.balance}>R$ {balance}</Text>
                 </View>
 
                 <View style={styles.ContainerButtomBalance}>
                     <TouchableOpacity onPress={() => setModalDepositoAtive(true)} style={styles.ButtomBalance}>
-                        <FontAwesome name="arrow-circle-up" size={RFPercentage(4.5)} color="green" style={{ paddingEnd: 13 }} />
+                        <FontAwesome name="arrow-circle-up" size={RFPercentage(4.5)} color="#09AB4F" style={{ paddingEnd: 13 }} />
                         <View >
-                            <Text style={{ color: '#868686', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>Entrada</Text>
-                            <Text style={{ color: 'green', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}>R$ {maskCurrency(String(deposit))}</Text>
+                            <Text style={{ color: '#606060', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>Entrada</Text>
+                            <Text style={{ color: '#09AB4F', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}>R$ {maskCurrency(String(deposit))}</Text>
                         </View>
                     </TouchableOpacity >
 
@@ -244,7 +245,7 @@ export default function Financa({ route }) {
                     <TouchableOpacity onPress={() => setModalRetiradaAtive(true)} style={styles.ButtomBalance}>
                         <FontAwesome name="arrow-circle-down" size={RFPercentage(4.5)} color="red" style={{ paddingEnd: 13 }} />
                         <View>
-                            <Text style={{ color: '#868686', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>saída</Text>
+                            <Text style={{ color: '#606060', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>saída</Text>
                             <Text style={{ color: 'red', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}> R$ {maskCurrency(String(withdrawal))}</Text>
                         </View>
                     </TouchableOpacity >
@@ -256,8 +257,8 @@ export default function Financa({ route }) {
             <View style={styles.cardProgresso}>
 
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: '#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Minha Meta: R$ {maskCurrency(String(route.params.meta))} </Text>
-                    <Text style={{ color: '#868686', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>{progress.toFixed(1)}%</Text>
+                    <Text style={{ color: '#606060', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Minha Meta: R$ {maskCurrency(String(route.params.meta))} </Text>
+                    <Text style={{ color: '#606060', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>{progress.toFixed(1)}%</Text>
                 </View>
 
                 <View style={styles.barraProgresso}>
@@ -267,7 +268,7 @@ export default function Financa({ route }) {
                         borderRadius: 18,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: 'green'
+                        backgroundColor: '#09AB4F'
                     }}>
                     </View>
                 </View>
@@ -275,7 +276,7 @@ export default function Financa({ route }) {
             <View style={styles.cardExtrato}>
                 <View style={{ top: -10, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
                     <View>
-                        <TouchableOpacity onPress={() => setVisible(true)} style={{ width: 150, height: 50, borderRadius: 10, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => setVisible(true)} style={{ width: 150, height: 50, borderRadius: 10, backgroundColor: '#09AB4F', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ color: 'white', fontWeight: 'bold' }}> Extrato Depositos</Text>
                         </TouchableOpacity>
                     </View>
@@ -287,12 +288,12 @@ export default function Financa({ route }) {
                     <FlatList
                         data={dataDeposito}
                         renderItem={({ item }) =>
-                            <TouchableOpacity onLongPress={() => { deletarItemDeposito(item) }} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                            <TouchableOpacity onLongPress={() => { deletarItemDeposito(item) }} style={{ backgroundColor: 'rgb(235,235,235)', shadowColor: "#000", elevation: 1,  borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
                                 <View>
                                     <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
                                     <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
                                 </View>
-                                <Text style={{ color: 'green', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
+                                <Text style={{ color: '#09AB4F', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
                             </TouchableOpacity>
                         }
                         keyExtractor={(item) => item.name}
@@ -303,7 +304,7 @@ export default function Financa({ route }) {
                     <FlatList
                         data={dataRetirada}
                         renderItem={({ item }) =>
-                            <TouchableOpacity onLongPress={() => { deletarItemRetirada(item) }} style={{ backgroundColor: 'rgba(210,210,210,0.9)', borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
+                            <TouchableOpacity onLongPress={() => { deletarItemRetirada(item) }} style={{ backgroundColor: 'rgb(235,235,235)', shadowColor: "#000", elevation: 1,  borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
                                 <View>
                                     <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
                                     <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
@@ -327,7 +328,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: 'rgba(210,210,210,0.9)',
+        backgroundColor: 'rgb(220,220,220)',
     },
     header: {
         width: '100%',
@@ -337,6 +338,8 @@ const styles = StyleSheet.create({
         borderBottomEndRadius: 30,
         borderBottomLeftRadius: 30,
         backgroundColor: 'rgb(243,243,243)',
+        shadowColor: "#000",
+        elevation: 1,
     },
     containerBalance: {
         justifyContent: 'center',
@@ -345,7 +348,8 @@ const styles = StyleSheet.create({
     },
     balance: {
         fontSize: RFPercentage(5),
-        color: '#868686'
+        color: '#606060',
+        fontWeight: '400'
     },
     ContainerButtomBalance: {
         justifyContent: 'center',
@@ -363,17 +367,7 @@ const styles = StyleSheet.create({
         margin: 5,
 
     },
-    cardMeta: {
-        width: '97%',
-        height: '8%',
-        borderRadius: 18,
-        marginTop: 10,
-        padding: 18,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: 'rgb(243,243,243)',
-    },
+
     cardExtrato: {
         width: '97%',
         height: '52%',
@@ -381,6 +375,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 18,
         backgroundColor: 'rgb(243,243,243)',
+        shadowColor: "#000",
+        elevation: 1,
     },
     cardProgresso: {
         width: '97%',
@@ -389,6 +385,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 18,
         backgroundColor: 'rgb(243,243,243)',
+        shadowColor: "#000", 
+        elevation: 1,
     },
     barraProgresso: {
         width: '100%',

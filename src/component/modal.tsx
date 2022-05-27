@@ -119,8 +119,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                 <View style={styles.outerView} onPress={() => changeStatusModal()}>
                     <KeyboardAvoidingView style={styles.modalView} behavior='padding'>
                         <View style={{ width: RFPercentage(30), height: RFPercentage(5), top: RFPercentage(2), justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
-                            <AntDesign onPress={() => changeStatusModal()} name="back" size={34} color='green' />
-                            <Text style={{ fontSize: RFPercentage(3), fontWeight: 'bold', color: '#868686' }}>Minha Meta</Text>
+                            <AntDesign onPress={() => changeStatusModal()} name="back" size={34} color='#09AB4F' />
+                            <Text style={{ fontSize: RFPercentage(3), fontWeight: 'bold', color: '#09AB4F' }}>Minha Meta</Text>
                         </View>
                         <View style={{ width: '100%', height: '80%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                             <View style={styles.containerInput}>
@@ -160,7 +160,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                                 />
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.buttonSalvar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Salvar</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonSalvar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Salvar meta</Text></TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View >
             </TouchableWithoutFeedback>
@@ -185,6 +185,8 @@ const styles = StyleSheet.create({
         height: 350,
         justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: "#000",
+        elevation: 1,
     },
     containerInput: {
         width: '100%',
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     buttonSalvar: {
         width: "50%",
         height: "18%",
-        backgroundColor: '#39d76c',
+        backgroundColor: '#09AB4F',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 18,

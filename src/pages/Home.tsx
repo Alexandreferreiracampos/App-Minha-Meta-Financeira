@@ -130,7 +130,7 @@ export default function Home() {
         
         < SafeAreaView style={styles.container}>
             
-            <StatusBar backgroundColor='#cdcdcd' barStyle="dark-content" />
+            <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
             
             <ScreenModal statusModal={modalActive} deposit={() => data()} changeStatusModal={() => setModalAtive(false)} />
         
@@ -153,8 +153,8 @@ export default function Home() {
                     extraData={updateFlastlist}
                 />
             </View>
-            <TouchableOpacity style={{ bottom: '4%', left: '82%' }} onPress={() => setModalAtive(true)}>
-                <AntDesign name="pluscircle" size={RFPercentage(7)} color="green" />
+            <TouchableOpacity style={{ bottom: '4%', left: '82%'}} onPress={() => setModalAtive(true)}>
+                <AntDesign name="pluscircle" size={RFPercentage(7)} color="#09AB4F" />
             </TouchableOpacity>
            
         </SafeAreaView>
@@ -165,14 +165,16 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#cdcdcd',
+        backgroundColor: 'rgb(243,243,243)',
         justifyContent: 'space-between',
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     listCard: {
         width: '100%',
         height: '85%',
-        padding: RFPercentage(2),
-
+        paddingTop:0,
+        padding: RFPercentage(3),
+        justifyContent:'center',
+      
     }
 })
