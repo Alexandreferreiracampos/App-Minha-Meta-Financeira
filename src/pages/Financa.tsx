@@ -46,7 +46,8 @@ export default function Financa({ route }) {
     useEffect(() => {
         readData()
         let newDate = new Date()
-        let dateGoal = new Date(route.params.date)
+        let dataInvertida = route.params.date.substring(3, 5) +'/'+route.params.date.substring(0, 2) +'/'+ route.params.date.substring(10, 6)
+        let dateGoal = new Date(dataInvertida)
         let datasomada = Math.abs(dateGoal - newDate)
         let timeinoneday = 1000 * 60 * 60 * 24
         let restam = datasomada / timeinoneday / 30
@@ -59,9 +60,8 @@ export default function Financa({ route }) {
 
     useEffect(() => {
         data()
-        salvarSaldo()
-        let moneyRemainingInt = convertForInt(moneyRemaining) / month
-        setSaveForMonth(maskCurrency(String(moneyRemainingInt.toFixed(0))))
+        salvarSaldo()   
+        guardarpormes()
     }, [balance, moneyRemaining])
 
     const data = () => {
@@ -70,6 +70,15 @@ export default function Financa({ route }) {
         somarDepositos()
         somarRetiradas()
         somarBalance()
+    }
+
+    const guardarpormes=()=>{
+        let moneyRemainingInt = convertForInt(moneyRemaining) / month
+        if(month == 0){
+            setSaveForMonth(maskCurrency(moneyRemaining))
+        }else{
+            setSaveForMonth(maskCurrency(String(moneyRemainingInt.toFixed(0))))
+        }
     }
 
     const salvarSaldo = async () => {
@@ -90,8 +99,15 @@ export default function Financa({ route }) {
         }
         setProgress(jsonData[index].porcent)
         storeData(value)
-        let moneyRemainingInt = route.params.meta - convertForInt(balance)
-        setMoneyRemaining(maskCurrency(String(moneyRemainingInt)))
+        let balanceInt = convertForInt(balance)
+        let moneyRemainingInt = route.params.meta - balanceInt
+        if(balanceInt > route.params.meta){
+            setMoneyRemaining('0')
+
+        }else{
+            setMoneyRemaining(maskCurrency(String(moneyRemainingInt)))
+        }
+        
 
     }
 
