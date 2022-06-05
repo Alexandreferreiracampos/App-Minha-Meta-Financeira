@@ -30,7 +30,8 @@ export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,v
                     <Text style={{ fontSize: 14, color: '#606060', fontWeight: 'bold', }}>{date}</Text>
                 </View>
                 <View>
-                    { visible && <Entypo name="check" size={24} color="#09AB4F" />}
+                    { visible && <Entypo name="check" size={24} color="#09AB4F" /> || <Text style={{fontSize: 14, color: '#606060', fontWeight: 'bold', }}>{porcent.toFixed(1)} %</Text>}
+                    
                 </View>
             </View>
             <View style={{ bottom: -15 }}>

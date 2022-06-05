@@ -107,7 +107,7 @@ export default function Home() {
             storeData(jsonData)
         }
     }
-  
+
 
     const storeData = async (value: any) => {
         try {
