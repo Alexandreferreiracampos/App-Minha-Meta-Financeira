@@ -3,10 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ToastAndroid, Aler
 import { FontAwesome } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import ScreenModalDeposito from "../component/modalDeposito";
 import ScreenModalRetirada from "../component/modalRetirada";
-import { calcularValor, convertForInt, maskCurrency } from "../component/function";
+import { convertForInt, maskCurrency } from "../component/function";
 import { FlatList } from 'react-native-gesture-handler';
 import LottieView from 'lottie-react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -29,6 +28,7 @@ export default function Financa({ route }) {
     const [moneyRemaining, setMoneyRemaining] = useState('');
     const [saveForMonth, setSaveForMonth] = useState();
     const [month, setMonth] = useState(0);
+    const [itemDate, setItemDate] = useState()
 
 
 
@@ -67,6 +67,7 @@ export default function Financa({ route }) {
     const data = () => {
         setModalDepositoAtive(false)
         setModalRetiradaAtive(false)
+        setModalEditarActive(false)
         somarDepositos()
         somarRetiradas()
         somarBalance()
@@ -178,6 +179,7 @@ export default function Financa({ route }) {
                     style: "cancel"
                 },
                 { text: "Excluir", onPress: () => biometric() }
+               
             ]
         );
 
@@ -194,6 +196,7 @@ export default function Financa({ route }) {
             }
 
         };
+
         const excluir = async () => {
 
             const data = await AsyncStorage.getItem('@financa:data10') || ''
