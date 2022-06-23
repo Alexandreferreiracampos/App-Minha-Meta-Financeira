@@ -7,6 +7,7 @@ import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import Checkbox from 'expo-checkbox';
 
 
 interface ButtonProps extends TouchableOpacityProps {
@@ -20,6 +21,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
     const [currency, setCurrency] = useState('');
     const [title, setTitle] = useState('');
+    const [isChecked, setChecked] = useState(false);
 
     const limparImput=()=>{
         setCurrency('')
@@ -50,16 +52,37 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
 
         const index = value.findIndex((element:any) => element.id == id)
 
-        let dados = value[index]
+        
+
+          if(isChecked == true){
+            let dados = value[index]
 
         dados.retirada.push({
             "date": new Date(),
             "nome": title,
             "valor": convertForInt(currency),
+            "retirarMeta": "Debitado da meta"
           },)
+            value[index].meta  = value[index].meta - convertForInt(currency)
+        
+          storeData(value)
+         
+          }else{
+            let dados = value[index]
+
+        dados.retirada.push({
+            "date": new Date(),
+            "nome": title,
+            "valor": convertForInt(currency),
+            "retirarMeta": ""
+          },)
+           
         
           storeData(value)
           
+
+          }
+   
         
         deposit()
 
@@ -90,6 +113,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
             await AsyncStorage.setItem('@financa:data10', jsonData)
             deposit()
             limparImput()
+            setChecked(false)
 
         } catch (e) {
             ToastAndroid.showWithGravityAndOffset(
@@ -111,7 +135,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.outerView} onPress={() => changeStatusModal()}>
                     <KeyboardAvoidingView style={styles.modalView} behavior='padding'>
-                        <View style={{ width: RFPercentage(30), height: RFPercentage(5), top: RFPercentage(2), justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
+                        <View style={{ width: RFPercentage(30), height: RFPercentage(5), top: RFPercentage(5), justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
                             <AntDesign onPress={() => changeStatusModal()} name="back" size={34} color='red' />
                             <Text style={{ fontSize: RFPercentage(3), fontWeight: 'bold', color: 'red' }}>Retirar</Text>
                         </View>
@@ -140,6 +164,15 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal,id
                                     inputMaskChange={(text: string) => setCurrency(text)}
                                 />
                             </View>
+                        </View>
+                        <View style={styles.section}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={isChecked}
+                                onValueChange={setChecked}
+                                color={isChecked ? 'red' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Descontar valor da meta</Text>
                         </View>
                         <TouchableOpacity style={styles.buttonRetirar} onPress={salvarMeta}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: RFPercentage(2) }}>Retirar</Text></TouchableOpacity>
                     </KeyboardAvoidingView>
@@ -194,8 +227,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 18,
-        bottom: RFPercentage(4)
+        bottom: RFPercentage(7)
     },
+    section: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        top:-66
+      },
+      paragraph: {
+        fontSize: 15,
+      },
+      checkbox: {
+        margin: 8,
+      },
     inputText: {
         width: "90%",
         height: "70%",

@@ -14,6 +14,7 @@ export default function Financa({ route }) {
 
     const balanceNone = '******';
     const [balance, setBalance] = useState('');
+    const [meta, setMeta] = useState('');
     const [deposit, setDeposit] = useState();
     const [withdrawal, setWithdrawal] = useState();
     const [progress, setProgress] = useState(0);
@@ -62,12 +63,12 @@ export default function Financa({ route }) {
         data()
         salvarSaldo()   
         guardarpormes()
+        DataMeta()
     }, [balance, moneyRemaining])
 
     const data = () => {
         setModalDepositoAtive(false)
         setModalRetiradaAtive(false)
-        setModalEditarActive(false)
         somarDepositos()
         somarRetiradas()
         somarBalance()
@@ -129,6 +130,13 @@ export default function Financa({ route }) {
         }
     }
 
+    const DataMeta= async ()=>{
+        const data = await AsyncStorage.getItem('@financa:data10') || ''
+        const jsonData = JSON.parse(data)
+        const index = jsonData.findIndex((element: any) => element.id == route.params.id)
+        setMeta(jsonData[index].meta) 
+    }
+
     const somarBalance = async () => {
         const data = await AsyncStorage.getItem('@financa:data10') || ''
         const jsonData = JSON.parse(data)
@@ -164,6 +172,9 @@ export default function Financa({ route }) {
         for (let i = 0; i < jsonData[index].retirada.length; i++) {
             dataSomaDeposito = jsonData[index].retirada[i].valor + dataSomaDeposito
         }
+        
+       data
+
         setWithdrawal(dataSomaDeposito)
         somarBalance()
 
@@ -239,8 +250,24 @@ export default function Financa({ route }) {
             const jsonData = JSON.parse(data)
             const index = jsonData.findIndex((element: any) => element.id == route.params.id)
             const indexRetirada = jsonData[index].retirada.findIndex((element: any) => element.date == item.date)
-            jsonData[index].retirada.splice(indexRetirada, 1)
-            storeData(jsonData)
+            if(jsonData[index].retirada[indexRetirada].retirarMeta == "Debitado da meta"){
+                const data = await AsyncStorage.getItem('@financa:data10')
+                const jsonData = JSON.parse(data)
+
+                const value = jsonData
+
+                const index = value.findIndex((element: any) => element.id == route.params.id)
+                 value[index].meta = value[index].meta + jsonData[index].retirada[indexRetirada].valor
+                 jsonData[index].retirada.splice(indexRetirada, 1)
+                 storeData(value)
+              
+            }else{
+                jsonData[index].retirada.splice(indexRetirada, 1)
+                storeData(jsonData)
+
+            }
+            
+           
         }
 
     }
@@ -306,7 +333,7 @@ export default function Financa({ route }) {
                 </View>}
 
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: '#606060', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Minha Meta: R$ {maskCurrency(String(route.params.meta))} </Text>
+                    <Text style={{ color: '#606060', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>Minha Meta: R$ {maskCurrency(String(meta))} </Text>
                     <Text style={{ color: '#606060', fontSize: RFPercentage(2), marginBottom: 10, fontWeight: 'bold' }}>{progress.toFixed(1)}%</Text>
                 </View>
 
@@ -356,8 +383,12 @@ export default function Financa({ route }) {
                             <TouchableOpacity onLongPress={() => { deletarItemRetirada(item) }} style={{ backgroundColor: 'rgb(235,235,235)', shadowColor: "#000", elevation: 1, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, margin: 5 }}>
                                 <View>
                                     <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.nome}</Text>
-                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}</Text>
+                                    <View style={{flexDirection:'row'}}>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.date.substring(10, 't')}      </Text>
+                                    <Text style={{ color: '#868686', fontWeight: 'bold' }}>{item.retirarMeta}</Text>
+                                    </View>
                                 </View>
+                               
                                 <Text style={{ color: 'red', fontWeight: 'bold' }}>R$ {maskCurrency(String(item.valor))}</Text>
                             </TouchableOpacity>
                         }

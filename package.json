@@ -26,7 +26,8 @@
     "react-native-screens": "~3.11.1",
     "react-native-web": "0.17.7",
     "expo-updates": "~0.13.2",
-    "expo-local-authentication": "~12.2.0"
+    "expo-local-authentication": "~12.2.0",
+    "expo-checkbox": "~2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
