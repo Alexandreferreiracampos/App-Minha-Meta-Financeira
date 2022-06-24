@@ -14,7 +14,7 @@ export default function Financa({ route }) {
 
     const balanceNone = '******';
     const [balance, setBalance] = useState('');
-    const [meta, setMeta] = useState('');
+    const [meta, setMeta] = useState();
     const [deposit, setDeposit] = useState();
     const [withdrawal, setWithdrawal] = useState();
     const [progress, setProgress] = useState(0);
@@ -57,6 +57,7 @@ export default function Financa({ route }) {
         setTimeout(() => {
             setVisibleAnimatino(false)
         }, 700)
+        DataMeta()
     }, [])
 
     useEffect(() => {
@@ -64,7 +65,8 @@ export default function Financa({ route }) {
         salvarSaldo()   
         guardarpormes()
         DataMeta()
-    }, [balance, moneyRemaining])
+        
+    }, [balance, moneyRemaining, visible1 ])
 
     const data = () => {
         setModalDepositoAtive(false)
@@ -72,6 +74,12 @@ export default function Financa({ route }) {
         somarDepositos()
         somarRetiradas()
         somarBalance()
+       
+    }
+
+    const modalRetirada=()=>{
+        setModalRetiradaAtive(true)
+        setVisible1(false)
     }
 
     const guardarpormes=()=>{
@@ -81,6 +89,7 @@ export default function Financa({ route }) {
         }else{
             setSaveForMonth(maskCurrency(String(moneyRemainingInt.toFixed(0))))
         }
+        
     }
 
     const salvarSaldo = async () => {
@@ -102,15 +111,14 @@ export default function Financa({ route }) {
         setProgress(jsonData[index].porcent)
         storeData(value)
         let balanceInt = convertForInt(balance)
-        let moneyRemainingInt = route.params.meta - balanceInt
-        if(balanceInt > route.params.meta){
+        let moneyRemainingInt = meta - balanceInt
+        if(balanceInt > meta){
             setMoneyRemaining('0')
 
         }else{
             setMoneyRemaining(maskCurrency(String(moneyRemainingInt)))
         }
-        
-
+       
     }
 
     const storeData = async (value: any) => {
@@ -177,8 +185,11 @@ export default function Financa({ route }) {
 
         setWithdrawal(dataSomaDeposito)
         somarBalance()
+     
+        
 
     }
+
 
     const deletarItemDeposito = async (item: any) => {
         Alert.alert(
@@ -209,7 +220,7 @@ export default function Financa({ route }) {
         };
 
         const excluir = async () => {
-
+            
             const data = await AsyncStorage.getItem('@financa:data10') || ''
             const jsonData = JSON.parse(data)
             const index = jsonData.findIndex((element: any) => element.id == route.params.id)
@@ -220,6 +231,7 @@ export default function Financa({ route }) {
         }
     }
     const deletarItemRetirada = async (item: any) => {
+        setVisible1(true)
         Alert.alert(
             `Tem certeza de que deseja excluir lançamento ${item.nome} ?`,
             'Excluir',
@@ -242,6 +254,7 @@ export default function Financa({ route }) {
 
             if (authenticationBiometric.success) {
                 excluir()
+                
             }
         };
 
@@ -266,6 +279,9 @@ export default function Financa({ route }) {
                 storeData(jsonData)
 
             }
+
+            setVisible1(false)
+            
             
            
         }
@@ -302,11 +318,11 @@ export default function Financa({ route }) {
 
                     <View style={{ width: 0.4, height: '70%', backgroundColor: 'black', margin: 10 }}></View>
 
-                    <TouchableOpacity onPress={() => setModalRetiradaAtive(true)} style={styles.ButtomBalance}>
+                    <TouchableOpacity onPress={() => modalRetirada()} style={styles.ButtomBalance}>
                         <FontAwesome name="arrow-circle-down" size={RFPercentage(4.5)} color="red" style={{ paddingEnd: 13 }} />
                         <View>
                             <Text style={{ color: '#606060', fontSize: RFPercentage(1.8), fontWeight: 'bold' }}>saída</Text>
-                            <Text style={{ color: 'red', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}> R$ {maskCurrency(String(withdrawal))}</Text>
+                            <Text style={{ color: 'red', fontSize: RFPercentage(2.7), fontWeight: 'bold' }}>R$ {maskCurrency(String(withdrawal))}</Text>
                         </View>
                     </TouchableOpacity >
 
