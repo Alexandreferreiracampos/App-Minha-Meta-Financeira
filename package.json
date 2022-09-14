@@ -1,6 +1,6 @@
 {
   "name": "app-meta-financa",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -27,7 +27,9 @@
     "react-native-web": "0.17.7",
     "expo-updates": "~0.13.2",
     "expo-local-authentication": "~12.2.0",
-    "expo-checkbox": "~2.1.0"
+    "expo-checkbox": "~2.1.0",
+    "undefined": "react-native-community/clipboard",
+    "expo-clipboard": "~3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

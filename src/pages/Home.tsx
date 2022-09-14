@@ -7,6 +7,8 @@ import ScreenModal from "../component/modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core'
 import * as LocalAuthentication from 'expo-local-authentication';
+import { Entypo } from '@expo/vector-icons'; 
+import * as Clipboard from 'expo-clipboard';
 
 
 export default function Home() {
@@ -17,6 +19,7 @@ export default function Home() {
     const [modalActive, setModalAtive] = useState(false);
     const [dataMeta, setDataMeta] = useState()
     const [load, setLoad] = useState(true)
+    const[saveData, setSaveData] = useState('')
     const navigation = useNavigation();
 
     const readData = async () => {
@@ -25,7 +28,8 @@ export default function Home() {
 
             const data = await AsyncStorage.getItem('@financa:data10') || ''
             const jsonData = JSON.parse(data)
-            setDataMeta(jsonData)
+            setSaveData(data)
+            setDataMeta(jsonData.reverse())
 
         } catch (e) {
             setDataMeta({
@@ -125,6 +129,17 @@ export default function Home() {
                 25, 50)
         }
     }
+ 
+    const saveFile= async ()=>{
+        await Clipboard.setString(saveData)
+        ToastAndroid.showWithGravityAndOffset(
+            "Dados copiados com sucesso!",
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25, 50)
+            console.log(dataMeta)
+       
+    }
 
     return (
         
@@ -153,9 +168,17 @@ export default function Home() {
                     extraData={updateFlastlist}
                 />
             </View>
-            <TouchableOpacity style={{ bottom: '4%', left: '82%'}} onPress={() => setModalAtive(true)}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', padding:19, alignItems:'center'}}>
+            <TouchableOpacity style={{ bottom: '5%'}} onPress={() => saveFile()}>
+            <Entypo name="save" size={RFPercentage(7)} color="#09AB4F" />
+            </TouchableOpacity>
+            <Text style={{bottom: '5%', color:"#09AB4F", fontSize:RFPercentage(3), fontWeight:'bold'}}>Minhas metas</Text>
+            <TouchableOpacity style={{ bottom: '5%', }} onPress={() => setModalAtive(true)}>
                 <AntDesign name="pluscircle" size={RFPercentage(7)} color="#09AB4F" />
             </TouchableOpacity>
+
+            </View>
+            
            
         </SafeAreaView>
         
@@ -171,7 +194,7 @@ const styles = StyleSheet.create({
     },
     listCard: {
         width: '100%',
-        height: '85%',
+        height: '90%',
         paddingTop:0,
         padding: RFPercentage(3),
         justifyContent:'center',
