@@ -288,6 +288,26 @@ export default function Financa({ route }) {
 
     }
 
+    const concluirMeta= async ()=>{
+        const authenticationBiometric = await LocalAuthentication.authenticateAsync({
+                promptMessage: "Concluir Meta",
+                cancelLabel: "Cancelar",
+                disableDeviceFallback: false,
+            });
+
+            if (authenticationBiometric.success) {
+               const data = await AsyncStorage.getItem('@financa:data10') || ''
+               const jsonData = JSON.parse(data)
+               const index = jsonData.findIndex((element: any) => element.id == route.params.id)
+               const value = jsonData
+               value[index].concluido = !value[index].concluido
+               value[index].metaTotal = deposit
+            
+               storeData(value)
+                 
+            }
+    }
+
     return (
 
         <View style={styles.container}>
@@ -330,7 +350,7 @@ export default function Financa({ route }) {
 
             </View>
 
-            <TouchableOpacity activeOpacity={0.8} onPress={() => setVisible1(!visible1)} style={visible1 && styles.cardProgresso || styles.cardProgresso1}>
+            <TouchableOpacity activeOpacity={0.8}  onLongPress={()=>concluirMeta()} onPress={() => setVisible1(!visible1)} style={visible1 && styles.cardProgresso || styles.cardProgresso1}>
                 {visible1 && <View style={{width:"100%", height:"50%", flexDirection:'row', justifyContent:'space-between', padding:10, marginBottom:18}}>
                     <View style={{width:"32%", height:"100%", justifyContent:'space-between', alignItems:'center',}}>
                         <Text style={{ color: '#606060', fontSize: RFPercentage(1.6), fontWeight: 'bold' }}>Falta guardar</Text>

@@ -52,6 +52,7 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                         saldo: 0,
                         porcent: 0,
                         visible: false,
+                        concluido:false,
                     }
                 )
                 storeData(value)
@@ -74,6 +75,8 @@ export default function ScreenModal({ statusModal, deposit, changeStatusModal, .
                         saldo: 0,
                         porcent: 0,
                         visible: false,
+                        concluido:false,
+                        metaTotal:0,
                     }
                 )
                 storeData(value)

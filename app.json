@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.alexandredev.MetaFinanca",
-      "versionCode": 1.0,
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -30,6 +30,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8eec20c4-428c-4889-b388-e1addd962af9"
+      }
     }
   }
 }

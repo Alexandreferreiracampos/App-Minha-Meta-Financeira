@@ -52,7 +52,9 @@ export default function Home() {
                 ],
                 meta: 0,
                 saldo: 0,
-                porcent: 0
+                porcent: 0,
+                concluido:false,
+                metaTotal:0,
             })
         }
 
@@ -158,8 +160,10 @@ export default function Home() {
                             saldo={item.saldo}
                             meta={item.meta}
                             date={item.date}
+                            concluido={item.concluido}
                             porcent={item.porcent}
                             visible={item.visible}
+                            metatotal={item.metaTotal}
                             lerDados={() => abrirMeta(item)}
                             longPress={() => deletarItemExtrato(item)}
                         />

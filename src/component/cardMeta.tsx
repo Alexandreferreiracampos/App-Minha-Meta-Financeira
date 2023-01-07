@@ -11,19 +11,22 @@ interface cardMetaProps extends TouchableOpacityProps {
     saldo: number;
     meta: string;
     porcent: number;
-    visible:boolean
+    visible:boolean;
+    concluido:boolean;
+    metatotal:number,
     lerDados: () => void;
     longPress:()=> void;
 
 }
 
-export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,visible,longPress, ...rest }: cardMetaProps) {
+export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,visible,concluido, metatotal,longPress, ...rest }: cardMetaProps) {
 
     let metaString = String(meta)
     let saldoString = String(saldo)
 
     return (
         <TouchableOpacity {...rest} style={styles.container} onPress={lerDados} onLongPress={longPress}>
+        { !concluido && <View >
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                 <View >
                     <Text style={styles.text}>{title}</Text>
@@ -56,6 +59,48 @@ export default function cardMeta({ title, lerDados, date, saldo, meta, porcent,v
                     </Text>
                 </View>
             </View>
+            </View> }
+            { concluido &&
+
+<View >
+<View style={{flexDirection:'row', justifyContent:'space-between'}}>
+    <View >
+        <Text style={styles.text}>{title}</Text>
+        <Text style={{ fontSize: 14, color: '#606060', fontWeight: 'bold', }}>{date}</Text>
+    </View>
+    <View>
+        <Entypo name="check" size={24} color="#09AB4F" /> 
+        
+    </View>
+</View>
+<View style={{ bottom: -15 }}>
+    <View style={styles.ProgressBar}>
+        <View style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 28,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#09AB4F'
+        }}>
+        </View>
+    </View>
+    <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text style={{ fontSize: 14, color: '#606060', fontWeight: 'bold', }}>
+        Concluído
+        </Text>
+        <Text style={{ fontSize: 16, color: '#606060', fontWeight: 'bold', }}>
+
+            R$ {maskCurrency(String(metatotal))}
+        </Text>
+    </View>
+</View>
+</View>
+
+
+
+            }
+           
 
         </TouchableOpacity>
     )
