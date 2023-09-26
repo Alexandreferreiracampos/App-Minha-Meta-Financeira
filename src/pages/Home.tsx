@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet, SafeAreaView, StatusBar, Platform, FlatList, ToastAndroid, Alert} from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, SafeAreaView, StatusBar, Platform, FlatList, ToastAndroid, Alert } from 'react-native';
 import CardMeta from "../component/cardMeta";
 import { AntDesign } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import ScreenModal from "../component/modal";
+import ModalBKP from "../component/modalBKP";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core'
 import * as LocalAuthentication from 'expo-local-authentication';
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 
 
@@ -17,9 +18,10 @@ export default function Home() {
 
     const [updateFlastlist, setUpdateFlastlist] = useState(true)
     const [modalActive, setModalAtive] = useState(false);
+    const [modalActiveBKP, setModalAtiveBKP] = useState(false);
     const [dataMeta, setDataMeta] = useState()
     const [load, setLoad] = useState(true)
-    const[saveData, setSaveData] = useState('')
+    const [saveData, setSaveData] = useState('')
     const navigation = useNavigation();
 
     const readData = async () => {
@@ -30,6 +32,7 @@ export default function Home() {
             const jsonData = JSON.parse(data)
             setSaveData(data)
             setDataMeta(jsonData.reverse())
+            dateFirebase(data)
 
         } catch (e) {
             setDataMeta({
@@ -53,21 +56,24 @@ export default function Home() {
                 meta: 0,
                 saldo: 0,
                 porcent: 0,
-                concluido:false,
-                metaTotal:0,
+                concluido: false,
+                metaTotal: 0,
             })
         }
 
 
     }
 
+    
+
     useEffect(() => {
         readData()
+        
         navigation.addListener('focus', () => setLoad(!load))
     }, [load, navigation])
 
     const data = () => {
-        setModalAtive(false)
+        setModalAtiveBKP(false)
         setUpdateFlastlist(!updateFlastlist)
         readData()
     }
@@ -131,26 +137,48 @@ export default function Home() {
                 25, 50)
         }
     }
- 
-    const saveFile= async ()=>{
+
+
+    const saveFile = async () => {
         await Clipboard.setString(saveData)
+        dateFirebase(saveData)
         ToastAndroid.showWithGravityAndOffset(
             "Dados copiados com sucesso!",
             ToastAndroid.LONG,
             ToastAndroid.CENTER,
             25, 50)
-            console.log(dataMeta)
-       
+        console.log(saveData)
+
+
+    }
+
+    const dateFirebase = (value:any) => {
+
+        let url = 'https://meta-40e80-default-rtdb.firebaseio.com/data.json?auth='${'meu token'}'
+        let req = new XMLHttpRequest();
+        req.open('PUT', url)
+        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        req.send(value);
+
+        ToastAndroid.showWithGravityAndOffset(
+            'Dados salvos na nuvem com sucesso!',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25,
+            50
+        );
+
+
     }
 
     return (
-        
+
         < SafeAreaView style={styles.container}>
-            
+
             <StatusBar backgroundColor='rgb(243,243,243)' barStyle="dark-content" />
-            
+
             <ScreenModal statusModal={modalActive} deposit={() => data()} changeStatusModal={() => setModalAtive(false)} />
-        
+            <ModalBKP statusModal={modalActiveBKP} deposit={() => data()} changeStatusModal={() => setModalAtiveBKP(false)}  />
             <View style={styles.listCard}>
                 <FlatList
                     data={dataMeta}
@@ -172,20 +200,25 @@ export default function Home() {
                     extraData={updateFlastlist}
                 />
             </View>
-            <View style={{flexDirection:'row', justifyContent:'space-between', padding:19, alignItems:'center'}}>
-            <TouchableOpacity style={{ bottom: '5%'}} onPress={() => saveFile()}>
-            <Entypo name="save" size={RFPercentage(7)} color="#09AB4F" />
-            </TouchableOpacity>
-            <Text style={{bottom: '5%', color:"#09AB4F", fontSize:RFPercentage(3), fontWeight:'bold'}}>Minhas metas</Text>
-            <TouchableOpacity style={{ bottom: '5%', }} onPress={() => setModalAtive(true)}>
-                <AntDesign name="pluscircle" size={RFPercentage(7)} color="#09AB4F" />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 19, alignItems: 'center' }}>
+                <TouchableOpacity style={{ bottom: '5%' }} onPress={() => saveFile()}>
+                    <Entypo name="save" size={RFPercentage(5)} color="#09AB4F" />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ bottom: '5%' }} onPress={() => setModalAtiveBKP(true)}>
+                    <Entypo name="back" size={RFPercentage(4)} color="#09AB4F" />
+                </TouchableOpacity>
+
+                <Text style={{ bottom: '5%', color: "#09AB4F", fontSize: RFPercentage(3), fontWeight: 'bold' }}>Minhas metas</Text>
+                <TouchableOpacity style={{ bottom: '5%', }} onPress={() => setModalAtive(true)}>
+                    <AntDesign name="pluscircle" size={RFPercentage(7)} color="#09AB4F" />
+
+                </TouchableOpacity>
 
             </View>
-            
-           
+
+
         </SafeAreaView>
-        
+
     )
 }
 
@@ -199,9 +232,9 @@ const styles = StyleSheet.create({
     listCard: {
         width: '100%',
         height: '90%',
-        paddingTop:0,
+        paddingTop: 0,
         padding: RFPercentage(3),
-        justifyContent:'center',
-      
+        justifyContent: 'center',
+
     }
 })
